@@ -1,2 +1,52 @@
-syntax  = "v1"
+syntax = "v1"
+
+type Base {
+	Code int32  `json:"code"`
+	Msg  string `json:"msg"`
+}
+
+//Login API
+type (
+	SignInReq {
+		Tel string `json:"tel"`
+		Pwd string `json:"pwd"`
+	}
+	SignInResp {
+		Base
+		Token string `json:"token"`
+	}
+	VerifyCodeReq {
+		Tel string `json:"tel"`
+	}
+	VerifyCodeResp {
+		Base
+	}
+	SignUpReq {
+		Tel      string `json:"tel"`
+		NickName string `json:"nickName"`
+		Pwd      string `json:"pwd"`
+		Code     string `json:"code"`
+	}
+	SignUpResp {
+		Base
+	}
+)
+
+@server (
+	prefix: /api/v1/login
+	group:  login
+)
+service applet-api {
+	@doc "登录"
+	@handler SignIn
+	post /signin (SignInReq) returns (SignInResp)
+
+	@doc "请求验证码"
+	@handler VerifyCode
+	post /verifycode (VerifyCodeReq) returns (VerifyCodeResp)
+
+	@doc "账号注册"
+	@handler SignUp
+	post /signup (SignUpReq) returns (SignUpResp)
+}
 

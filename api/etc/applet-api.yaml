@@ -1,0 +1,18 @@
+Name: applet-api
+Host: 0.0.0.0
+Port: 8888
+
+BizRedis:
+  Host: 127.0.0.1:6379
+  Pass:
+  Type: node
+
+UserRpc:
+  Etcd:
+    Hosts:
+      - 127.0.0.1:2379
+    Key: user.rpc
+
+Auth:
+  AccessSecret: AFEFBCDDEFC
+  AccessExpire: 3600
