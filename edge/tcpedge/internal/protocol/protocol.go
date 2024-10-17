@@ -33,7 +33,7 @@ func (v Version) String() string {
 const (
 	Version000     Version = 0x000000
 	Version010     Version = 0x000100
-	CurrentVersion Version = Version000
+	CurrentVersion Version = Version010
 )
 
 type _protocol struct {
