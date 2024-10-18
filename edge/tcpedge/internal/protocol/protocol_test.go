@@ -26,7 +26,7 @@ func TestProtocolV000(t *testing.T) {
 	for _, item := range items {
 		t.Run(item.Name, func(t *testing.T) {
 			buf := bytes.NewBuffer(nil)
-			if err := Protocol.Encode(buf, []byte(item.In)); err != nil {
+			if err := Protocol.EncodeWithVersion(buf, []byte(item.In), Version000); err != nil {
 				t.Fatal(err)
 			}
 			if data, err := Protocol.Decode(buf); err != nil {
@@ -67,7 +67,7 @@ func TestProtocolV010(t *testing.T) {
 	for _, item := range items {
 		t.Run(item.Name, func(t *testing.T) {
 			buf := bytes.NewBuffer(nil)
-			if err := Protocol.Encode(buf, &item.In); err != nil {
+			if err := Protocol.EncodeWithVersion(buf, &item.In, Version010); err != nil {
 				t.Fatal(err)
 			}
 			if v, err := Protocol.Decode(buf); err != nil {

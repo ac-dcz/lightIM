@@ -30,7 +30,10 @@ func (c noneCodec) Decode(data []byte) (interface{}, error) {
 	return data, nil
 }
 func (c noneCodec) Encode(v interface{}) ([]byte, error) {
-	return v.([]byte), nil
+	if data, ok := v.([]byte); ok {
+		return data, nil
+	}
+	return nil, nil
 }
 
 type ProtoV010 struct {

@@ -96,10 +96,10 @@ func (p *_protocol) Decode(r io.Reader) (interface{}, error) {
 	}
 }
 
-func (p *_protocol) Encode(w io.Writer, v interface{}) error {
+func (p *_protocol) EncodeWithVersion(w io.Writer, v interface{}, ver Version) error {
 	var data []byte
 	h := &header{
-		Version:   CurrentVersion,
+		Version:   ver,
 		Timestamp: time.Now().Unix(),
 	}
 	if hdata, err := h.encode(); err != nil {
@@ -108,7 +108,7 @@ func (p *_protocol) Encode(w io.Writer, v interface{}) error {
 		data = append(data, hdata...)
 	}
 
-	ins, ok := p.Instance(CurrentVersion)
+	ins, ok := p.Instance(ver)
 	if !ok {
 		panic(ErrVersionNotFound)
 	}
@@ -127,6 +127,10 @@ func (p *_protocol) Encode(w io.Writer, v interface{}) error {
 	}
 
 	return nil
+}
+
+func (p *_protocol) Encode(w io.Writer, v interface{}) error {
+	return p.EncodeWithVersion(w, v, CurrentVersion)
 }
 
 var Protocol *_protocol
