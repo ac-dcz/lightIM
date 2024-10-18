@@ -3,7 +3,6 @@ package handler
 import (
 	"github.com/panjf2000/ants/v2"
 	"lightIM/edge/tcpedge/internal/logic"
-	"lightIM/edge/tcpedge/internal/svc"
 )
 
 type Request struct {
@@ -21,12 +20,11 @@ type ImHandlerOptions struct {
 }
 
 type ImHandler struct {
-	svcCtx   *svc.ServiceContext
 	workPool *ants.PoolWithFunc
 	reqChan  chan *Request
 }
 
-func MustNewImHandler(svcCtx *svc.ServiceContext, opt *ImHandlerOptions) *ImHandler {
+func MustNewImHandler(opt *ImHandlerOptions) *ImHandler {
 	if opt == nil {
 		opt = &ImHandlerOptions{
 			poolSize:    10,
@@ -38,7 +36,6 @@ func MustNewImHandler(svcCtx *svc.ServiceContext, opt *ImHandlerOptions) *ImHand
 		panic(err)
 	}
 	imh := &ImHandler{
-		svcCtx:   svcCtx,
 		workPool: pool,
 		reqChan:  make(chan *Request, opt.reqChanSize),
 	}
