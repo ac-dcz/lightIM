@@ -39,4 +39,18 @@ var ApiVerifyCode = &apiVerifyCode{
 	IntervalExpiredtime: time.Second * 60,
 }
 
-const UserIdKey = "user_id"
+const TokenUserIdKey = "user_id"
+
+type edgeTcpServer struct {
+	WorkPoolSize       int
+	ReqChannelBuf      int
+	AuthTimeout        time.Duration
+	UnAuthCleanTimeout time.Duration
+}
+
+var EdgeTcpServer = &edgeTcpServer{
+	WorkPoolSize:       10,
+	ReqChannelBuf:      100,
+	AuthTimeout:        time.Second * 30,
+	UnAuthCleanTimeout: time.Second * 30,
+}

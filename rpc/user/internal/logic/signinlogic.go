@@ -33,7 +33,7 @@ func (l *SignInLogic) SignIn(in *types.SignInReq) (*types.SignInResp, error) {
 	if user, err := l.svcCtx.UserModel.FindOneByTel(l.ctx, in.Tel); errors.Is(err, usermodel.ErrNotFound) {
 		return &types.SignInResp{
 			Base: &types.Base{
-				Code: codes.RpcUserInvaild,
+				Code: codes.RpcUserInvalid,
 				Msg:  "账号不存在或密码错误",
 			},
 		}, nil
@@ -44,7 +44,7 @@ func (l *SignInLogic) SignIn(in *types.SignInReq) (*types.SignInResp, error) {
 		if user.Password != utils.EncString(in.Pwd) {
 			return &types.SignInResp{
 				Base: &types.Base{
-					Code: codes.RpcUserInvaild,
+					Code: codes.RpcUserInvalid,
 					Msg:  "账号不存在或密码错误",
 				},
 			}, nil

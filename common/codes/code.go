@@ -21,11 +21,16 @@ const (
 	LoginTelEmpty int32 = 30001 + iota
 	LoginVerifyTooFast
 	LoginVerifyOverTimes
-	LoginParamsInvaild
+	LoginParamsInvalid
 	LoginVerifyCodeErr
 )
 
 const (
 	RpcUserUserExist int32 = 40001 + iota
-	RpcUserInvaild
+	RpcUserInvalid
+)
+
+const (
+	EdgeAuthTimeOut int32 = 50001 + iota
+	EdgeUnAuthenticated
 )

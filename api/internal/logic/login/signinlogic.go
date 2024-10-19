@@ -33,7 +33,7 @@ func (l *SignInLogic) SignIn(req *types.SignInReq) (resp *types.SignInResp, err 
 	if req.Tel == "" || req.Pwd == "" {
 		return &types.SignInResp{
 			Base: types.Base{
-				Code: codes.LoginParamsInvaild,
+				Code: codes.LoginParamsInvalid,
 				Msg:  "无效参数",
 			},
 		}, nil
@@ -56,7 +56,7 @@ func (l *SignInLogic) SignIn(req *types.SignInReq) (resp *types.SignInResp, err 
 		}, nil
 	} else {
 		payload := map[string]interface{}{
-			params.UserIdKey: rpcResp.Uid,
+			params.TokenUserIdKey: rpcResp.Uid,
 		}
 		if token, err := jwt.BuildToken(&jwt.TokenOption{
 			AccessExpire: l.svcCtx.Config.Auth.AccessExpire,

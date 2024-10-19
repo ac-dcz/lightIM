@@ -2,13 +2,14 @@ package imnet
 
 import (
 	"context"
+	"lightIM/common/params"
 	"sync"
 	"time"
 )
 
 type PoolOptions struct {
-	authTimeout time.Duration
-	tickerTime  time.Duration
+	authTimeout        time.Duration
+	unAuthCleanTimeout time.Duration
 }
 
 type ConnPool struct {
@@ -24,8 +25,8 @@ type ConnPool struct {
 func NewConnPool(ctx context.Context, options *PoolOptions) *ConnPool {
 	if options == nil {
 		options = &PoolOptions{
-			authTimeout: time.Second * 5,
-			tickerTime:  time.Second * 5,
+			authTimeout:        params.EdgeTcpServer.AuthTimeout,
+			unAuthCleanTimeout: params.EdgeTcpServer.UnAuthCleanTimeout,
 		}
 	}
 	pool := &ConnPool{
@@ -33,7 +34,7 @@ func NewConnPool(ctx context.Context, options *PoolOptions) *ConnPool {
 		validConn2Addr: make(map[string]*ImConn),
 		waitConn:       make(map[string]*ImConn),
 		opts:           options,
-		ticker:         time.NewTicker(options.tickerTime),
+		ticker:         time.NewTicker(options.unAuthCleanTimeout),
 	}
 	go pool.cleanUp(ctx)
 
@@ -48,14 +49,14 @@ func (cp *ConnPool) cleanUp(ctx context.Context) {
 		case <-cp.ticker.C:
 			now := time.Now().Unix()
 			cp.wMutex.Lock()
-			var conns []*ImConn
+			var unAuthList []*ImConn
 			for _, conn := range cp.validConn {
 				if now-conn.upTime >= int64(cp.opts.authTimeout.Seconds()) && !conn.IsValid() {
-					conns = append(conns, conn)
+					unAuthList = append(unAuthList, conn)
 				}
 			}
-			//close all unauth connections
-			for _, conn := range conns {
+			//close all unAuthList connections
+			for _, conn := range unAuthList {
 				_ = conn.Close()
 				delete(cp.waitConn, conn.LocalAddr().String())
 				break
@@ -85,7 +86,9 @@ func (cp *ConnPool) AddConn(conn *ImConn) {
 		cp.validConn2Addr[conn.RemoteAddr().String()] = conn
 		cp.validConn[conn.UID()] = conn
 	} else {
-
+		cp.wMutex.Lock()
+		defer cp.wMutex.Unlock()
+		cp.waitConn[conn.RemoteAddr().String()] = conn
 	}
 }
 
@@ -98,6 +101,13 @@ func (cp *ConnPool) DelAuthConnByAddr(key string) bool {
 		return true
 	}
 	return false
+}
+
+func (cp *ConnPool) GetUnAuthConnByAddr(key string) (*ImConn, bool) {
+	cp.wMutex.Lock()
+	defer cp.wMutex.Unlock()
+	conn, ok := cp.waitConn[key]
+	return conn, ok
 }
 
 func (cp *ConnPool) GetAuthConnByUid(uid int64) (*ImConn, bool) {

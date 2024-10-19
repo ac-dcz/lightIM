@@ -32,7 +32,7 @@ func (l *SignUpLogic) SignUp(req *types.SignUpReq) (resp *types.SignUpResp, err 
 	if req.Tel == "" || req.Pwd == "" || req.NickName == "" {
 		return &types.SignUpResp{
 			Base: types.Base{
-				Code: codes.LoginParamsInvaild,
+				Code: codes.LoginParamsInvalid,
 				Msg:  "无效参数",
 			},
 		}, nil

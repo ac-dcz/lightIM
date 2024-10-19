@@ -1,7 +1,6 @@
 package imnet
 
 import (
-	"errors"
 	"github.com/panjf2000/gnet/v2"
 	"github.com/zeromicro/go-zero/core/logx"
 	"lightIM/edge/tcpedge/internal/protocol"
@@ -10,11 +9,11 @@ import (
 	"time"
 )
 
-var ErrUnAuthenticated = errors.New("unauthenticated")
+//var ErrUnAuthenticated = errors.New("unauthenticated")
 
 type ImConn struct {
-	wMutex sync.Mutex
 	gnet.Conn
+	wMutex  sync.Mutex
 	uid     atomic.Int64
 	isValid atomic.Bool //是否已经进行Token认证
 	upTime  int64       //上次更新时间
@@ -33,9 +32,9 @@ func (ic *ImConn) UID() int64 {
 
 // Write is concurrency-safe.
 func (ic *ImConn) Write(v interface{}) error {
-	if !ic.isValid.Load() {
-		return ErrUnAuthenticated
-	}
+	//if !ic.isValid.Load() {
+	//	return ErrUnAuthenticated
+	//}
 	ic.wMutex.Lock()
 	defer ic.wMutex.Unlock()
 	if err := protocol.Protocol.Encode(ic.Conn, v); err != nil {

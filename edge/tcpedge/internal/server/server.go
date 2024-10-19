@@ -33,7 +33,7 @@ func (ime *ImEventHandler) OnOpen(c gnet.Conn) (out []byte, action gnet.Action) 
 	return
 }
 
-func (ime *ImEventHandler) OnClose(c gnet.Conn, err error) (action gnet.Action) {
+func (ime *ImEventHandler) OnClose(c gnet.Conn, _ error) (action gnet.Action) {
 	ime.s.logger.Infof("Conn %s OnClose", c.RemoteAddr().String())
 	ime.s.svcCtx.ConnPool.DelAuthConnByAddr(c.RemoteAddr().String())
 	return
@@ -44,23 +44,26 @@ func (ime *ImEventHandler) OnTraffic(c gnet.Conn) (action gnet.Action) {
 		ime.s.logger.Errorf("Conn %s decode err: %v", c.RemoteAddr(), err)
 		return gnet.Close
 	} else {
-		ime.s.svcCtx.ImHandler.Handle(&handler.Request{
-			Key: c.RemoteAddr().String(),
-			R:   v,
+		ime.s.handler.Handle(&handler.Request{
+			RemoteAddr: c.RemoteAddr().String(),
+			R:          v,
+			SvcCtx:     ime.s.svcCtx,
 		})
 	}
 	return
 }
 
 type TcpEdgeServer struct {
-	svcCtx *svc.ServiceContext
-	logger logx.Logger
+	svcCtx  *svc.ServiceContext
+	logger  logx.Logger
+	handler handler.Interface
 }
 
-func NewTcpServer(svcCtx *svc.ServiceContext) *TcpEdgeServer {
+func NewTcpServer(svcCtx *svc.ServiceContext, handler handler.Interface) *TcpEdgeServer {
 	return &TcpEdgeServer{
-		svcCtx: svcCtx,
-		logger: logx.WithContext(context.TODO()),
+		svcCtx:  svcCtx,
+		logger:  logx.WithContext(context.TODO()),
+		handler: handler,
 	}
 }
 

@@ -2,12 +2,19 @@ package handler
 
 import (
 	"github.com/panjf2000/ants/v2"
-	"lightIM/edge/tcpedge/internal/logic"
+	"github.com/zeromicro/go-zero/core/logx"
+	"lightIM/common/params"
+	"lightIM/edge/tcpedge/internal/handler/access"
+	"lightIM/edge/tcpedge/internal/handler/multichat"
+	"lightIM/edge/tcpedge/internal/handler/singlechat"
+	"lightIM/edge/tcpedge/internal/svc"
+	"lightIM/edge/tcpedge/types"
 )
 
 type Request struct {
-	Key string
-	R   any
+	RemoteAddr string
+	R          any
+	SvcCtx     *svc.ServiceContext
 }
 
 type Interface interface {
@@ -27,18 +34,24 @@ type ImHandler struct {
 func MustNewImHandler(opt *ImHandlerOptions) *ImHandler {
 	if opt == nil {
 		opt = &ImHandlerOptions{
-			poolSize:    10,
-			reqChanSize: 100,
+			poolSize:    params.EdgeTcpServer.WorkPoolSize,
+			reqChanSize: params.EdgeTcpServer.ReqChannelBuf,
 		}
 	}
-	pool, err := ants.NewPoolWithFunc(opt.poolSize, logic.HandleRequest, ants.WithNonblocking(false))
+
+	imh := &ImHandler{
+		reqChan: make(chan *Request, opt.reqChanSize),
+	}
+
+	pool, err := ants.NewPoolWithFunc(opt.poolSize, func(i interface{}) {
+		imh.handle(i)
+	}, ants.WithNonblocking(false))
+
 	if err != nil {
 		panic(err)
 	}
-	imh := &ImHandler{
-		workPool: pool,
-		reqChan:  make(chan *Request, opt.reqChanSize),
-	}
+
+	imh.workPool = pool
 
 	go func() {
 		for req := range imh.reqChan {
@@ -51,4 +64,22 @@ func MustNewImHandler(opt *ImHandlerOptions) *ImHandler {
 
 func (imh *ImHandler) Handle(req *Request) {
 	imh.reqChan <- req
+}
+
+func (imh *ImHandler) handle(v any) {
+	req, ok := v.(*Request)
+	if !ok {
+		panic("handle message is not *request")
+	}
+	switch msg := req.R.(type) {
+
+	case *types.AccessMsg:
+		access.HandleAccessMsg(req.SvcCtx, msg, req.RemoteAddr)
+	case *types.SingleChatMsg:
+		singlechat.HandleSingleChatMsg(req.SvcCtx, msg, req.RemoteAddr)
+	case *types.MultiChatMsg:
+		multichat.HandleMultiChatMsg(req.SvcCtx, msg, req.RemoteAddr)
+	default:
+		logx.Errorf("unhandle msg %v,not found msg type", msg)
+	}
 }
