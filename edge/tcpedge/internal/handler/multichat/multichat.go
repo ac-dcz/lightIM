@@ -20,13 +20,9 @@ func HandleMultiChatMsg(svcCtx *svc.ServiceContext, msg *types.MultiChatMsg, key
 	)
 	conn, ok = svcCtx.ConnPool.GetAuthConnByAddr(key)
 	if ok {
-		if resp, err = logic.MultiChat(msg); err != nil {
+		if resp, err = logic.MultiChat(msg, conn); err != nil {
 			resp = &types.MultiChatMsgResp{
 				RespBase: types.RespBase{
-					Base: types.Base{
-						MsgId:     msg.MsgId,
-						TimeStamp: time.Now().Unix(),
-					},
 					Code: codes.InternalServerError.Code,
 					Msg:  err.Error(),
 				},
@@ -37,12 +33,13 @@ func HandleMultiChatMsg(svcCtx *svc.ServiceContext, msg *types.MultiChatMsg, key
 			RespBase: types.RespBase{
 				Code: codes.EdgeUnAuthenticated,
 				Msg:  "UnAuthenticated",
-				Base: types.Base{
-					MsgId:     msg.MsgId,
-					TimeStamp: time.Now().Unix(),
-				},
 			},
 		}
+	}
+
+	resp.Base = types.Base{
+		MsgId:     msg.MsgId,
+		TimeStamp: time.Now().Unix(),
 	}
 
 	if err = conn.Write(resp); err != nil {

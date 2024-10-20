@@ -35,4 +35,8 @@ type Config struct {
 	Etcd struct {
 		Host []string
 	}
+	Auth struct {
+		AccessSecret string
+		AccessExpire int64
+	}
 }

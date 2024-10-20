@@ -10,3 +10,6 @@ Edge:
 Etcd:
   Host:
     - 127.0.0.1:2379
+Auth:
+  AccessSecret: AFEFBCDDEFC
+  AccessExpire: 3600

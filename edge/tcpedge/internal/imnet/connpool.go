@@ -2,6 +2,7 @@ package imnet
 
 import (
 	"context"
+	"github.com/zeromicro/go-zero/core/logx"
 	"lightIM/common/params"
 	"sync"
 	"time"
@@ -50,15 +51,17 @@ func (cp *ConnPool) cleanUp(ctx context.Context) {
 			now := time.Now().Unix()
 			cp.wMutex.Lock()
 			var unAuthList []*ImConn
-			for _, conn := range cp.validConn {
+			for _, conn := range cp.waitConn {
 				if now-conn.upTime >= int64(cp.opts.authTimeout.Seconds()) && !conn.IsValid() {
 					unAuthList = append(unAuthList, conn)
 				}
 			}
 			//close all unAuthList connections
 			for _, conn := range unAuthList {
+				key := conn.RemoteAddr().String()
+				logx.Infof("auth timeout conn: %s", key)
 				_ = conn.Close()
-				delete(cp.waitConn, conn.LocalAddr().String())
+				delete(cp.waitConn, key)
 				break
 			}
 			cp.wMutex.Unlock()
@@ -92,16 +95,31 @@ func (cp *ConnPool) AddConn(conn *ImConn) {
 	}
 }
 
-func (cp *ConnPool) DelAuthConnByAddr(key string) bool {
+func (cp *ConnPool) RemoveConn(key string) {
 	cp.vMutex.Lock()
-	defer cp.vMutex.Unlock()
 	if conn, ok := cp.validConn2Addr[key]; ok {
 		delete(cp.validConn2Addr, key)
 		delete(cp.validConn, conn.UID())
-		return true
 	}
-	return false
+	cp.vMutex.Unlock()
+
+	cp.wMutex.Lock()
+	if _, ok := cp.waitConn[key]; ok {
+		delete(cp.waitConn, key)
+	}
+	cp.wMutex.Unlock()
 }
+
+//func (cp *ConnPool) DelAuthConnByAddr(key string) bool {
+//	cp.vMutex.Lock()
+//	defer cp.vMutex.Unlock()
+//	if conn, ok := cp.validConn2Addr[key]; ok {
+//		delete(cp.validConn2Addr, key)
+//		delete(cp.validConn, conn.UID())
+//		return true
+//	}
+//	return false
+//}
 
 func (cp *ConnPool) GetUnAuthConnByAddr(key string) (*ImConn, bool) {
 	cp.wMutex.Lock()

@@ -52,3 +52,7 @@ func (ic *ImConn) Authenticated(id int64) {
 func (ic *ImConn) IsValid() bool {
 	return ic.isValid.Load()
 }
+
+func (ic *ImConn) Key() string {
+	return ic.RemoteAddr().String()
+}

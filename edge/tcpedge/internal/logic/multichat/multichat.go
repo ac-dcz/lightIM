@@ -3,6 +3,7 @@ package multichat
 import (
 	"context"
 	"github.com/zeromicro/go-zero/core/logx"
+	"lightIM/edge/tcpedge/internal/imnet"
 	"lightIM/edge/tcpedge/internal/svc"
 	"lightIM/edge/tcpedge/types"
 )
@@ -19,6 +20,6 @@ func NewMultiChatLogic(svcCtx *svc.ServiceContext) *MultiChatLogic {
 	}
 }
 
-func (l *MultiChatLogic) MultiChat(msg *types.MultiChatMsg) (*types.MultiChatMsgResp, error) {
+func (l *MultiChatLogic) MultiChat(msg *types.MultiChatMsg, conn *imnet.ImConn) (*types.MultiChatMsgResp, error) {
 	return &types.MultiChatMsgResp{}, nil
 }

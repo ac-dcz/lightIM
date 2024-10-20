@@ -36,7 +36,7 @@ func (ime *ImEventHandler) OnOpen(c gnet.Conn) (out []byte, action gnet.Action) 
 
 func (ime *ImEventHandler) OnClose(c gnet.Conn, _ error) (action gnet.Action) {
 	ime.s.logger.Infof("Conn %s OnClose", c.RemoteAddr().String())
-	ime.s.svcCtx.ConnPool.DelAuthConnByAddr(c.RemoteAddr().String())
+	ime.s.svcCtx.ConnPool.RemoveConn(c.RemoteAddr().String())
 	return
 }
 
@@ -79,6 +79,7 @@ func (s *TcpEdgeServer) Start() error {
 		return err
 	}
 	return gnet.Run(&ImEventHandler{
+		s:            s,
 		EventHandler: &gnet.BuiltinEventEngine{},
 	}, fmt.Sprintf("%s://%s", "tcp", s.svcCtx.C.Edge.Host))
 }

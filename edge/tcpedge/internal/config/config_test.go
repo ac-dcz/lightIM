@@ -18,6 +18,10 @@ var testConfig = Config{
 			Brokers:   []string{"127.0.0.1:9092"},
 		},
 	},
+	Auth: struct {
+		AccessSecret string
+		AccessExpire int64
+	}{AccessSecret: "AFEFBCDDEFC", AccessExpire: 3600},
 }
 
 func TestBuildConfig(t *testing.T) {

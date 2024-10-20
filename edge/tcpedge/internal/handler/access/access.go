@@ -13,18 +13,19 @@ func HandleAccessMsg(svcCtx *svc.ServiceContext, msg *types.AccessMsg, key strin
 	logic := access.NewAccessLogic(svcCtx)
 
 	if conn, ok := svcCtx.ConnPool.GetUnAuthConnByAddr(key); ok {
-		resp, err := logic.Access(msg)
+		resp, err := logic.Access(msg, conn)
 		if err != nil {
 			resp = &types.AccessMsgResp{
 				RespBase: types.RespBase{
-					Base: types.Base{
-						MsgId:     msg.MsgId,
-						TimeStamp: time.Now().Unix(),
-					},
 					Code: codes.InternalServerError.Code,
 					Msg:  err.Error(),
 				},
 			}
+		}
+
+		resp.Base = types.Base{
+			MsgId:     msg.MsgId,
+			TimeStamp: time.Now().Unix(),
 		}
 
 		if err = conn.Write(resp); err != nil {

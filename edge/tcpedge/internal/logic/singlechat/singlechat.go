@@ -3,6 +3,7 @@ package singlechat
 import (
 	"context"
 	"github.com/zeromicro/go-zero/core/logx"
+	"lightIM/edge/tcpedge/internal/imnet"
 	"lightIM/edge/tcpedge/internal/svc"
 	"lightIM/edge/tcpedge/types"
 )
@@ -19,6 +20,6 @@ func NewSingleChatLogic(svcCtx *svc.ServiceContext) *SingleChatLogic {
 	}
 }
 
-func (l *SingleChatLogic) SingleChat(msg *types.SingleChatMsg) (*types.SingleChatMsgResp, error) {
+func (l *SingleChatLogic) SingleChat(msg *types.SingleChatMsg, conn *imnet.ImConn) (*types.SingleChatMsgResp, error) {
 	return &types.SingleChatMsgResp{}, nil
 }

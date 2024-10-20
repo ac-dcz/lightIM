@@ -22,13 +22,9 @@ func HandleSingleChatMsg(svcCtx *svc.ServiceContext, msg *types.SingleChatMsg, k
 
 	conn, ok = svcCtx.ConnPool.GetAuthConnByAddr(key)
 	if ok {
-		if resp, err = logic.SingleChat(msg); err != nil {
+		if resp, err = logic.SingleChat(msg, conn); err != nil {
 			resp = &types.SingleChatMsgResp{
 				RespBase: types.RespBase{
-					Base: types.Base{
-						MsgId:     msg.MsgId,
-						TimeStamp: time.Now().Unix(),
-					},
 					Code: codes.InternalServerError.Code,
 					Msg:  err.Error(),
 				},
@@ -39,14 +35,13 @@ func HandleSingleChatMsg(svcCtx *svc.ServiceContext, msg *types.SingleChatMsg, k
 			RespBase: types.RespBase{
 				Code: codes.EdgeUnAuthenticated,
 				Msg:  "UnAuthenticated",
-				Base: types.Base{
-					MsgId:     msg.MsgId,
-					TimeStamp: time.Now().Unix(),
-				},
 			},
 		}
 	}
-
+	resp.Base = types.Base{
+		MsgId:     msg.MsgId,
+		TimeStamp: time.Now().Unix(),
+	}
 	if err = conn.Write(resp); err != nil {
 		logx.Error(err)
 	}
