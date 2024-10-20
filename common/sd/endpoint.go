@@ -2,7 +2,7 @@ package sd
 
 import "encoding/json"
 
-type MetaData map[string]string
+type MetaData map[string]interface{}
 
 func (m MetaData) Encode() ([]byte, error) {
 	return json.Marshal(m)

@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"github.com/panjf2000/gnet/v2"
 	"github.com/zeromicro/go-zero/core/logx"
+	"lightIM/common/sd"
 	"lightIM/edge/tcpedge/internal/handler"
 	"lightIM/edge/tcpedge/internal/imnet"
 	"lightIM/edge/tcpedge/internal/protocol"
@@ -67,8 +68,17 @@ func NewTcpServer(svcCtx *svc.ServiceContext, handler handler.Interface) *TcpEdg
 	}
 }
 
-func (s *TcpEdgeServer) Start(network, address string) error {
+func (s *TcpEdgeServer) Start() error {
+	publish, err := sd.NewPublish(s.svcCtx.C.Etcd.Host, s.svcCtx.C.Edge.EtcdKey(), s.svcCtx.C.Edge.MetaData())
+	if err != nil {
+		s.logger.Errorf("publish err: %v", err)
+		return err
+	}
+	if err := publish.KeepAlive(); err != nil {
+		s.logger.Errorf("publish err: %v", err)
+		return err
+	}
 	return gnet.Run(&ImEventHandler{
 		EventHandler: &gnet.BuiltinEventEngine{},
-	}, fmt.Sprintf("%s://%s", network, address))
+	}, fmt.Sprintf("%s://%s", "tcp", s.svcCtx.C.Edge.Host))
 }

@@ -46,6 +46,9 @@ type edgeTcpServer struct {
 	ReqChannelBuf      int
 	AuthTimeout        time.Duration
 	UnAuthCleanTimeout time.Duration
+	EtcdEdgeId         string
+	EtcdEdgeKq         string
+	EtcdEdgeHost       string
 }
 
 var EdgeTcpServer = &edgeTcpServer{
@@ -53,4 +56,7 @@ var EdgeTcpServer = &edgeTcpServer{
 	ReqChannelBuf:      100,
 	AuthTimeout:        time.Second * 30,
 	UnAuthCleanTimeout: time.Second * 30,
+	EtcdEdgeKq:         "edge_kq",
+	EtcdEdgeId:         "edge_id",
+	EtcdEdgeHost:       "edge_host",
 }
