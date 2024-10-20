@@ -55,7 +55,7 @@ var EdgeTcpServer = &edgeTcpServer{
 	WorkPoolSize:       10,
 	ReqChannelBuf:      100,
 	AuthTimeout:        time.Second * 30,
-	UnAuthCleanTimeout: time.Second * 30,
+	UnAuthCleanTimeout: time.Second * 5,
 	EtcdEdgeKq:         "edge_kq",
 	EtcdEdgeId:         "edge_id",
 	EtcdEdgeHost:       "edge_host",

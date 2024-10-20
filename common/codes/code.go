@@ -33,4 +33,5 @@ const (
 const (
 	EdgeAuthTimeOut int32 = 50001 + iota
 	EdgeUnAuthenticated
+	EdgeAuthenticatedInvalid
 )
