@@ -1,0 +1,45 @@
+syntax = "proto3";
+
+package types;
+
+option go_package = "./types";
+
+message Base{
+  int32 code = 1;
+  string msg = 2;
+}
+
+message UserOnlineReq{
+  int64 edgeId = 1;
+  int64 userId = 2;
+  string edgeEtcdKey = 3;
+}
+
+message UserOnlineResp{
+  Base base = 1;
+}
+
+message UserOfflineReq{
+  int64 edgeId = 1;
+  int64 userId = 2;
+}
+
+message UserOfflineResp{
+  Base base = 1;
+}
+
+message RouteReq{
+  int64 userId = 1;
+}
+
+message RouteResp{
+  Base base = 1;
+  int64 edgeId = 2;
+  string edgeEtcdKey = 3;
+}
+
+service Online{
+  rpc UserOnline(UserOfflineReq) returns(UserOfflineResp);
+  rpc UserOffline(UserOfflineReq) returns(UserOfflineResp);
+  rpc GetRoute(RouteReq) returns(RouteResp);
+}
