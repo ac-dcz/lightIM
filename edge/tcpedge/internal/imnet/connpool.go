@@ -3,7 +3,9 @@ package imnet
 import (
 	"context"
 	"github.com/zeromicro/go-zero/core/logx"
+	"lightIM/common/codes"
 	"lightIM/common/params"
+	"lightIM/edge/tcpedge/types"
 	"sync"
 	"time"
 )
@@ -60,6 +62,13 @@ func (cp *ConnPool) cleanUp(ctx context.Context) {
 			for _, conn := range unAuthList {
 				key := conn.RemoteAddr().String()
 				logx.Infof("auth timeout conn: %s", key)
+
+				_ = conn.Write(&types.AccessMsgResp{
+					RespBase: types.RespBase{
+						Code: codes.EdgeAuthTimeOut,
+						Msg:  "auth timeout",
+					},
+				})
 				_ = conn.Close()
 				delete(cp.waitConn, key)
 				break
