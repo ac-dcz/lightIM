@@ -22,7 +22,7 @@ func NewOnlineServer(svcCtx *svc.ServiceContext) *OnlineServer {
 	}
 }
 
-func (s *OnlineServer) UserOnline(ctx context.Context, in *types.UserOfflineReq) (*types.UserOfflineResp, error) {
+func (s *OnlineServer) UserOnline(ctx context.Context, in *types.UserOnlineReq) (*types.UserOnlineResp, error) {
 	l := logic.NewUserOnlineLogic(ctx, s.svcCtx)
 	return l.UserOnline(in)
 }

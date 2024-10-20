@@ -28,7 +28,7 @@ const (
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type OnlineClient interface {
-	UserOnline(ctx context.Context, in *UserOfflineReq, opts ...grpc.CallOption) (*UserOfflineResp, error)
+	UserOnline(ctx context.Context, in *UserOnlineReq, opts ...grpc.CallOption) (*UserOnlineResp, error)
 	UserOffline(ctx context.Context, in *UserOfflineReq, opts ...grpc.CallOption) (*UserOfflineResp, error)
 	GetRoute(ctx context.Context, in *RouteReq, opts ...grpc.CallOption) (*RouteResp, error)
 }
@@ -41,8 +41,8 @@ func NewOnlineClient(cc grpc.ClientConnInterface) OnlineClient {
 	return &onlineClient{cc}
 }
 
-func (c *onlineClient) UserOnline(ctx context.Context, in *UserOfflineReq, opts ...grpc.CallOption) (*UserOfflineResp, error) {
-	out := new(UserOfflineResp)
+func (c *onlineClient) UserOnline(ctx context.Context, in *UserOnlineReq, opts ...grpc.CallOption) (*UserOnlineResp, error) {
+	out := new(UserOnlineResp)
 	err := c.cc.Invoke(ctx, Online_UserOnline_FullMethodName, in, out, opts...)
 	if err != nil {
 		return nil, err
@@ -72,7 +72,7 @@ func (c *onlineClient) GetRoute(ctx context.Context, in *RouteReq, opts ...grpc.
 // All implementations must embed UnimplementedOnlineServer
 // for forward compatibility
 type OnlineServer interface {
-	UserOnline(context.Context, *UserOfflineReq) (*UserOfflineResp, error)
+	UserOnline(context.Context, *UserOnlineReq) (*UserOnlineResp, error)
 	UserOffline(context.Context, *UserOfflineReq) (*UserOfflineResp, error)
 	GetRoute(context.Context, *RouteReq) (*RouteResp, error)
 	mustEmbedUnimplementedOnlineServer()
@@ -82,7 +82,7 @@ type OnlineServer interface {
 type UnimplementedOnlineServer struct {
 }
 
-func (UnimplementedOnlineServer) UserOnline(context.Context, *UserOfflineReq) (*UserOfflineResp, error) {
+func (UnimplementedOnlineServer) UserOnline(context.Context, *UserOnlineReq) (*UserOnlineResp, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method UserOnline not implemented")
 }
 func (UnimplementedOnlineServer) UserOffline(context.Context, *UserOfflineReq) (*UserOfflineResp, error) {
@@ -105,7 +105,7 @@ func RegisterOnlineServer(s grpc.ServiceRegistrar, srv OnlineServer) {
 }
 
 func _Online_UserOnline_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(UserOfflineReq)
+	in := new(UserOnlineReq)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
@@ -117,7 +117,7 @@ func _Online_UserOnline_Handler(srv interface{}, ctx context.Context, dec func(i
 		FullMethod: Online_UserOnline_FullMethodName,
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(OnlineServer).UserOnline(ctx, req.(*UserOfflineReq))
+		return srv.(OnlineServer).UserOnline(ctx, req.(*UserOnlineReq))
 	}
 	return interceptor(ctx, in, info, handler)
 }

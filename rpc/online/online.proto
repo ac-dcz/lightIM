@@ -39,7 +39,7 @@ message RouteResp{
 }
 
 service Online{
-  rpc UserOnline(UserOfflineReq) returns(UserOfflineResp);
+  rpc UserOnline(UserOnlineReq) returns(UserOnlineResp);
   rpc UserOffline(UserOfflineReq) returns(UserOfflineResp);
   rpc GetRoute(RouteReq) returns(RouteResp);
 }

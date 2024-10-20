@@ -22,7 +22,7 @@ type (
 	UserOnlineResp  = types.UserOnlineResp
 
 	Online interface {
-		UserOnline(ctx context.Context, in *UserOfflineReq, opts ...grpc.CallOption) (*UserOfflineResp, error)
+		UserOnline(ctx context.Context, in *UserOnlineReq, opts ...grpc.CallOption) (*UserOnlineResp, error)
 		UserOffline(ctx context.Context, in *UserOfflineReq, opts ...grpc.CallOption) (*UserOfflineResp, error)
 		GetRoute(ctx context.Context, in *RouteReq, opts ...grpc.CallOption) (*RouteResp, error)
 	}
@@ -38,7 +38,7 @@ func NewOnline(cli zrpc.Client) Online {
 	}
 }
 
-func (m *defaultOnline) UserOnline(ctx context.Context, in *UserOfflineReq, opts ...grpc.CallOption) (*UserOfflineResp, error) {
+func (m *defaultOnline) UserOnline(ctx context.Context, in *UserOnlineReq, opts ...grpc.CallOption) (*UserOnlineResp, error) {
 	client := types.NewOnlineClient(m.cli.Conn())
 	return client.UserOnline(ctx, in, opts...)
 }
