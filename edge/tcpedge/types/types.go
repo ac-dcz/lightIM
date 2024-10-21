@@ -1,6 +1,7 @@
 package types
 
 import (
+	"lightIM/common/params"
 	"lightIM/edge/tcpedge/internal/protocol"
 	"reflect"
 )
@@ -33,14 +34,6 @@ type AccessMsgResp struct {
 func (m *AccessMsgResp) MsgType() uint32 {
 	return AccessMsgRespType
 }
-
-type ContentType uint32
-
-const (
-	Text ContentType = iota
-	NormalFile
-	BigFile
-)
 
 // SingleChatMsg 私聊
 type SingleChatMsg struct {
@@ -83,8 +76,8 @@ func (m *MultiChatMsgResp) MsgType() uint32 {
 }
 
 type Content struct {
-	Type ContentType `json:"type"`
-	Data interface{} `json:"data"`
+	Type params.ContentType `json:"type"`
+	Data interface{}        `json:"data"`
 }
 
 type TextContent struct {
