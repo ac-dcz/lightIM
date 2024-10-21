@@ -20,7 +20,10 @@ func main() {
 	}
 
 	svcCtx := svc.NewServiceContext(cfg)
-	imHandler := handler.MustNewImHandler(nil)
+	imHandler, err := handler.NewImHandler(nil)
+	if err != nil {
+		panic(err)
+	}
 
 	s := server.NewTcpServer(svcCtx, imHandler)
 	log.Println("start listen ", cfg.Edge.Host)

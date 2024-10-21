@@ -10,6 +10,7 @@ import (
 	"lightIM/edge/tcpedge/internal/imnet"
 	"lightIM/edge/tcpedge/internal/protocol"
 	"lightIM/edge/tcpedge/internal/svc"
+	"lightIM/edge/tcpedge/types"
 )
 
 type ImEventHandler struct {
@@ -36,7 +37,13 @@ func (ime *ImEventHandler) OnOpen(c gnet.Conn) (out []byte, action gnet.Action) 
 
 func (ime *ImEventHandler) OnClose(c gnet.Conn, _ error) (action gnet.Action) {
 	ime.s.logger.Infof("Conn %s OnClose", c.RemoteAddr().String())
-	ime.s.svcCtx.ConnPool.RemoveConn(c.RemoteAddr().String())
+	if conn, ok := ime.s.svcCtx.ConnPool.RemoveConn(c.RemoteAddr().String()); ok && conn.IsValid() {
+		ime.s.handler.Handle(&handler.Request{
+			RemoteAddr: c.RemoteAddr().String(),
+			R:          &types.OfflineNotify{Uid: conn.UID()},
+			SvcCtx:     ime.s.svcCtx,
+		})
+	}
 	return
 }
 

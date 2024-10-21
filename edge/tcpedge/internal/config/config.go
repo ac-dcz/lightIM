@@ -1,21 +1,17 @@
 package config
 
 import (
+	"github.com/zeromicro/go-zero/zrpc"
+	"lightIM/common/mq"
 	"lightIM/common/params"
 	"lightIM/common/sd"
 )
 
-type KafkaConf struct {
-	Brokers   []string `json:"brokers"`
-	Topic     string   `json:"topic"`
-	GroupName string   `json:"groupName"`
-}
-
 type EdgeTcpServerConf struct {
 	Host   string
-	Key    string    //Etcd key
-	EdgeId int64     //Edge id
-	Kq     KafkaConf //kafka
+	Key    string        //Etcd key
+	EdgeId int64         //Edge id
+	Kq     mq.ReaderConf //kafka
 }
 
 func (e *EdgeTcpServerConf) EtcdKey() string {
@@ -39,4 +35,5 @@ type Config struct {
 		AccessSecret string
 		AccessExpire int64
 	}
+	OnlineRpc zrpc.RpcClientConf
 }

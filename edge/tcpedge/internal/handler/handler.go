@@ -6,6 +6,7 @@ import (
 	"lightIM/common/params"
 	"lightIM/edge/tcpedge/internal/handler/access"
 	"lightIM/edge/tcpedge/internal/handler/multichat"
+	"lightIM/edge/tcpedge/internal/handler/offline"
 	"lightIM/edge/tcpedge/internal/handler/singlechat"
 	"lightIM/edge/tcpedge/internal/svc"
 	"lightIM/edge/tcpedge/types"
@@ -31,7 +32,7 @@ type ImHandler struct {
 	reqChan  chan *Request
 }
 
-func MustNewImHandler(opt *ImHandlerOptions) *ImHandler {
+func NewImHandler(opt *ImHandlerOptions) (*ImHandler, error) {
 	if opt == nil {
 		opt = &ImHandlerOptions{
 			poolSize:    params.EdgeTcpServer.WorkPoolSize,
@@ -48,7 +49,7 @@ func MustNewImHandler(opt *ImHandlerOptions) *ImHandler {
 	}, ants.WithNonblocking(false))
 
 	if err != nil {
-		panic(err)
+		return nil, err
 	}
 
 	imh.workPool = pool
@@ -59,7 +60,7 @@ func MustNewImHandler(opt *ImHandlerOptions) *ImHandler {
 		}
 	}()
 
-	return imh
+	return imh, nil
 }
 
 func (imh *ImHandler) Handle(req *Request) {
@@ -79,6 +80,8 @@ func (imh *ImHandler) handle(v any) {
 		singlechat.HandleSingleChatMsg(req.SvcCtx, msg, req.RemoteAddr)
 	case *types.MultiChatMsg:
 		multichat.HandleMultiChatMsg(req.SvcCtx, msg, req.RemoteAddr)
+	case *types.OfflineNotify:
+		offline.HandleOffline(req.SvcCtx, msg, req.RemoteAddr)
 	default:
 		logx.Errorf("unhandle msg %v,not found msg type", msg)
 	}

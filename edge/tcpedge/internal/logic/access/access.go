@@ -9,6 +9,7 @@ import (
 	"lightIM/edge/tcpedge/internal/imnet"
 	"lightIM/edge/tcpedge/internal/svc"
 	"lightIM/edge/tcpedge/types"
+	"lightIM/rpc/online/online"
 )
 
 type AccessLogic struct {
@@ -43,6 +44,17 @@ func (l *AccessLogic) Access(msg *types.AccessMsg, conn *imnet.ImConn) (*types.A
 	} else {
 		l.Logger.Infof("Conn %s auth successfully,uid %d", conn.Key(), int64(uid))
 		l.svcCtx.ConnPool.AuthConn(conn.Key(), int64(uid))
+
+		//Online Rpc
+		if resp, err := l.svcCtx.OnlineRpc.UserOnline(context.Background(), &online.UserOnlineReq{
+			EdgeEtcdKey: l.svcCtx.C.Edge.EtcdKey(),
+			EdgeId:      l.svcCtx.C.Edge.EdgeId,
+			UserId:      int64(uid),
+		}); err != nil {
+			logx.Errorf("online rpc call UserOnline error: %v", err)
+		} else if resp.Base.Code != codes.OK.Code {
+			logx.Errorf("online rpc call UserOnline resp: {code: %d,msg: %s}", resp.Base.Code, resp.Base.Msg)
+		}
 	}
 
 	return &types.AccessMsgResp{

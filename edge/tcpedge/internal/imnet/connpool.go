@@ -104,19 +104,22 @@ func (cp *ConnPool) AddConn(conn *ImConn) {
 	}
 }
 
-func (cp *ConnPool) RemoveConn(key string) {
+func (cp *ConnPool) RemoveConn(key string) (conn *ImConn, ok bool) {
 	cp.vMutex.Lock()
-	if conn, ok := cp.validConn2Addr[key]; ok {
+	if conn, ok = cp.validConn2Addr[key]; ok {
 		delete(cp.validConn2Addr, key)
 		delete(cp.validConn, conn.UID())
 	}
 	cp.vMutex.Unlock()
-
+	if ok {
+		return
+	}
 	cp.wMutex.Lock()
-	if _, ok := cp.waitConn[key]; ok {
+	if conn, ok = cp.waitConn[key]; ok {
 		delete(cp.waitConn, key)
 	}
 	cp.wMutex.Unlock()
+	return
 }
 
 //func (cp *ConnPool) DelAuthConnByAddr(key string) bool {

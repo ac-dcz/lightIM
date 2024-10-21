@@ -96,6 +96,10 @@ type NormalFileContent struct{}
 
 type BigFileContent struct{}
 
+type OfflineNotify struct {
+	Uid int64
+}
+
 const (
 	AccessMsgType uint32 = iota
 	AccessMsgRespType
