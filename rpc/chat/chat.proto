@@ -1,0 +1,30 @@
+syntax = "proto3";
+
+package types;
+
+option go_package="./types";
+
+message Base{
+  uint32 code = 1;
+  string msg = 2;
+}
+
+message SingleChatReq {
+}
+
+message SingleChatResp {
+  Base base = 1;
+}
+
+message GroupChatReq{
+}
+
+message GroupChatResp{
+  Base base = 1;
+}
+
+service Chat{
+  rpc SingleChat(SingleChatReq) returns(SingleChatResp);
+  rpc GroupChat(GroupChatReq) returns(GroupChatResp);
+}
+
