@@ -60,3 +60,23 @@ var EdgeTcpServer = &edgeTcpServer{
 	EtcdEdgeId:         "edge_id",
 	EtcdEdgeHost:       "edge_host",
 }
+
+type rpcOnline struct {
+	EdgeInfoTimeout time.Duration
+	EdgeInfo        string
+	EdgeOnline      string
+}
+
+func (r *rpcOnline) BizEdgeInfoKey(edgeId int64) string {
+	return fmt.Sprintf("%s%d", r.EdgeInfo, edgeId)
+}
+
+func (r *rpcOnline) BizEdgeOnlineKey(edgeId int64) string {
+	return fmt.Sprintf("%s%d", r.EdgeOnline, edgeId)
+}
+
+var RpcOnline = &rpcOnline{
+	EdgeOnline:      "biz:rpc:online:edge:",
+	EdgeInfo:        "biz:rpc:online:info:",
+	EdgeInfoTimeout: time.Second * 0,
+}

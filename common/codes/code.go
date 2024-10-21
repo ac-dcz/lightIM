@@ -35,3 +35,8 @@ const (
 	EdgeUnAuthenticated
 	EdgeAuthenticatedInvalid
 )
+
+const (
+	RpcOnlineParamsInvalid = 60001 + iota
+	RpcOnlineNotFoundRoute
+)
