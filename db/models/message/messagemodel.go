@@ -16,7 +16,7 @@ type (
 	// and implement the added methods in customMessageModel.
 	MessageModel interface {
 		messageModel
-		UpdateStatusById(ctx context.Context, id primitive.ObjectID, status params.MsgStatus) error
+		UpdateStatus(ctx context.Context, id string, status params.MsgStatus) error
 	}
 
 	customMessageModel struct {
@@ -24,9 +24,13 @@ type (
 	}
 )
 
-func (c *customMessageModel) UpdateStatusById(ctx context.Context, id primitive.ObjectID, status params.MsgStatus) error {
-	key := prefixMessageCacheKey + id.Hex()
-	if _, err := c.conn.UpdateOne(ctx, key, bson.M{"_id": id}, bson.M{"$set": bson.M{"status": status}}); err != nil {
+func (c *customMessageModel) UpdateStatus(ctx context.Context, id string, status params.MsgStatus) error {
+	oid, err := primitive.ObjectIDFromHex(id)
+	if err != nil {
+		return err
+	}
+	key := prefixMessageCacheKey + oid.Hex()
+	if _, err := c.conn.UpdateOne(ctx, key, bson.M{"_id": oid}, bson.M{"$set": bson.M{"status": status}}); err != nil {
 		return err
 	}
 	return nil
