@@ -69,8 +69,18 @@ func (c *customHistoryModel) RemoveUnRead(ctx context.Context, uid int64, msgId 
 func (c *customHistoryModel) AddHistory(ctx context.Context, uid, to int64, msgId ...primitive.ObjectID) error {
 	opts := options.Update().SetUpsert(true)
 	key := prefixHistoryEntryCacheKey + strconv.FormatInt(uid, 10)
-	if _, err := c.conn.UpdateOne(ctx, key, bson.M{"uid": uid, "histories.to": to}, bson.M{"$push": bson.M{"histories.$.msgList": bson.M{"$each": msgId}}}, opts); err != nil {
-		return err
+	if e, err := c.GetHistories(ctx, uid, to); err == nil && len(e) > 0 {
+		if _, err := c.conn.UpdateOne(ctx, key, bson.M{"uid": uid, "histories.to": to}, bson.M{"$push": bson.M{"histories.$.msgList": bson.M{"$each": msgId}}}, opts); err != nil {
+			return err
+		}
+	} else {
+		entry := Entry{
+			To:      to,
+			MsgList: msgId,
+		}
+		if _, err := c.conn.UpdateOne(ctx, key, bson.M{"uid": uid}, bson.M{"$push": bson.M{"histories": entry}}, opts); err != nil {
+			return err
+		}
 	}
 	return nil
 }
