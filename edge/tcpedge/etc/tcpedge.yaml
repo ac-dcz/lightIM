@@ -2,11 +2,15 @@ Edge:
   Host: 127.0.0.1:6000
   Key: edge.tcp
   EdgeId: 1001
-  Kq:
+  KqReader:
     Brokers:
       - 127.0.0.1:9092
     Topic: edge.tcp.1001
     GroupName: edge.tcp.1001.consumer
+  KqWriter:
+    Brokers:
+      - 127.0.0.1:9092
+    Topic: edge.tcp.chat
 Etcd:
   Host:
     - 127.0.0.1:2379

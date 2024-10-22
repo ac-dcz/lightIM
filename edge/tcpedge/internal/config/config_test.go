@@ -13,7 +13,7 @@ var testConfig = Config{
 		Key:    "edge.tcp",
 		EdgeId: 1001,
 		Host:   "127.0.0.1:6000",
-		Kq: mq.ReaderConf{
+		KqReader: mq.ReaderConf{
 			Topic:     "edge.tcp.1001",
 			GroupName: "edge.tcp.1001.consumer",
 			Brokers:   []string{"127.0.0.1:9092"},
