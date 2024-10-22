@@ -10,6 +10,11 @@ message Base{
 }
 
 message SingleChatReq {
+  int64 From = 1;
+  int64 To = 2;
+  uint32 ContentType = 3;
+  bytes Data = 4;
+  int64 TimeStamp = 5;
 }
 
 message SingleChatResp {
@@ -17,6 +22,11 @@ message SingleChatResp {
 }
 
 message GroupChatReq{
+  int64 From = 1;
+  int64 Group = 2;
+  uint32 ContentType = 3;
+  bytes Data = 4;
+  int64 TimeStamp = 5;
 }
 
 message GroupChatResp{

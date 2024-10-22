@@ -25,6 +25,8 @@ func NewSingleChatLogic(ctx context.Context, svcCtx *svc.ServiceContext) *Single
 
 func (l *SingleChatLogic) SingleChat(in *types.SingleChatReq) (*types.SingleChatResp, error) {
 	// todo: add your logic here and delete this line
+	// Step1: rpc message save in mongodb
 
+	// Step2: push kafka notify edge
 	return &types.SingleChatResp{}, nil
 }
