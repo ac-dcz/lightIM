@@ -4,3 +4,9 @@ Etcd:
   Hosts:
   - 127.0.0.1:2379
   Key: chat.rpc
+
+OnlineRpc:
+  Etcd:
+    Hosts:
+      - 127.0.0.1:2379
+    Key: online.rpc

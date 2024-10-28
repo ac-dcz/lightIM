@@ -5,16 +5,18 @@ package types;
 option go_package="./types";
 
 message Base{
-  uint32 code = 1;
+  int32 code = 1;
   string msg = 2;
 }
 
 message SingleChatReq {
   int64 From = 1;
   int64 To = 2;
-  uint32 ContentType = 3;
-  bytes Data = 4;
-  int64 TimeStamp = 5;
+  string msgId = 3;
+  uint32 encodingType = 4;
+  bytes data = 5;
+  int64 TimeStamp = 6;
+  uint32 Type = 7;
 }
 
 message SingleChatResp {
@@ -24,9 +26,11 @@ message SingleChatResp {
 message GroupChatReq{
   int64 From = 1;
   int64 Group = 2;
-  uint32 ContentType = 3;
-  bytes Data = 4;
-  int64 TimeStamp = 5;
+  string msgId = 3;
+  uint32 encodingType = 4;
+  bytes data = 5;
+  int64 TimeStamp = 6;
+  uint32 Type = 7;
 }
 
 message GroupChatResp{
