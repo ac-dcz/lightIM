@@ -1,7 +1,7 @@
 syntax = "proto3";
 
 
-option go_package = "./;types";
+option go_package = "./types";
 
 message Base {
   int32 code = 1;
@@ -26,6 +26,7 @@ message SignUpReq{
 
 message SignUpResp{
   Base base = 1;
+  int64 uid = 4;
 }
 
 service User{

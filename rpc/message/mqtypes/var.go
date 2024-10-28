@@ -9,6 +9,7 @@ type Message struct {
 	Type         params.ContentType `bson:"type" json:"type"`
 	Status       params.MsgStatus   `bson:"status" json:"status"`
 	From         int64              `bson:"from" json:"from"`
+	Group        int64              `bson:"group" json:"group"`
 	To           int64              `bson:"to" json:"to"`
 	IsGroup      bool               `bson:"isGroup" json:"isGroup"`
 	EncodingType uint32             `bson:"encodingType" json:"encodingType"`

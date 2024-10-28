@@ -22,6 +22,11 @@ func NewMessageServer(svcCtx *svc.ServiceContext) *MessageServer {
 	}
 }
 
+func (s *MessageServer) CreateNew(ctx context.Context, in *types.CreateNewReq) (*types.CreateNewResp, error) {
+	l := logic.NewCreateNewLogic(ctx, s.svcCtx)
+	return l.CreateNew(in)
+}
+
 func (s *MessageServer) GetHistory(ctx context.Context, in *types.HistoryReq) (*types.HistoryResp, error) {
 	l := logic.NewGetHistoryLogic(ctx, s.svcCtx)
 	return l.GetHistory(in)

@@ -39,6 +39,7 @@ func NewSignUpLogic(ctx context.Context, svcCtx *svc.ServiceContext) *SignUpLogi
 func (l *SignUpLogic) SignUp(in *types.SignUpReq) (*types.SignUpResp, error) {
 	// todo: add your logic here and delete this line
 	// 检查tel是否已经存在
+	var uid = int64(-1)
 	if _, err := l.svcCtx.UserModel.FindOneByTel(l.ctx, in.Tel); errors.Is(err, usermodel.ErrNotFound) {
 		//存入数据库
 		user := &usermodel.UserInfos{
@@ -51,9 +52,11 @@ func (l *SignUpLogic) SignUp(in *types.SignUpReq) (*types.SignUpResp, error) {
 				Valid:  true,
 			},
 		}
-		if _, err := l.svcCtx.UserModel.Insert(l.ctx, user); err != nil {
+		if r, err := l.svcCtx.UserModel.Insert(l.ctx, user); err != nil {
 			l.Logger.Errorf("mysql error: %v", err)
 			return nil, err
+		} else {
+			uid, _ = r.LastInsertId()
 		}
 	} else if err != nil {
 		l.Logger.Errorf("mysql error: %v", err)
@@ -69,6 +72,7 @@ func (l *SignUpLogic) SignUp(in *types.SignUpReq) (*types.SignUpResp, error) {
 	}
 
 	return &types.SignUpResp{
+		Uid: uid,
 		Base: &types.Base{
 			Code: codes.OK.Code,
 			Msg:  codes.OK.Msg,

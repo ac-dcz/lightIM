@@ -5,8 +5,28 @@ package message;
 option go_package = "./types";
 
 message Base{
-  uint32 code = 1;
+  int32 code = 1;
   string msg = 2;
+}
+
+message CreateNewReq{
+  int64 id = 1;
+  bool isGroup = 2;
+}
+
+message CreateNewResp{
+  Base base = 1;
+}
+
+message MsgEntry{
+  uint32 Type = 1;
+  uint32 status = 2;
+  int64 from = 3;
+  int64 to = 4;
+  bool isGroup = 5;
+  uint32 encodingType = 6;
+  bytes data = 7;
+  int64 timeStamp = 8;
 }
 
 message HistoryReq{
@@ -16,6 +36,7 @@ message HistoryReq{
 
 message HistoryResp{
   Base base = 1;
+  repeated MsgEntry histories = 2;
 }
 
 message GroupHistoryReq{
@@ -24,6 +45,7 @@ message GroupHistoryReq{
 
 message GroupHistoryResp{
   Base base = 1;
+  repeated MsgEntry histories = 2;
 }
 
 message UnReadReq {
@@ -32,6 +54,7 @@ message UnReadReq {
 
 message UnReadResp{
   Base base = 1;
+  repeated MsgEntry msgEntries = 2;
 }
 
 message MsgReq{
@@ -40,6 +63,7 @@ message MsgReq{
 
 message MsgResp{
   Base base = 1;
+  MsgEntry msg = 2;
 }
 
 message UpdateMsgStatusReq{
@@ -52,6 +76,7 @@ message UpdateMsgStatusResp{
 }
 
 service Message {
+  rpc CreateNew(CreateNewReq) returns(CreateNewResp);
   rpc GetHistory(HistoryReq) returns(HistoryResp);
   rpc GetGroupHistory(GroupHistoryReq) returns(GroupHistoryResp);
   rpc GetUnRead(UnReadReq) returns(UnReadResp);

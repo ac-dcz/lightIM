@@ -1,6 +1,30 @@
 Name: message.rpc
-ListenOn: 0.0.0.0:8080
+ListenOn: 0.0.0.0:8082
 Etcd:
   Hosts:
   - 127.0.0.1:2379
   Key: message.rpc
+
+HistoryConf:
+  Uri: mongodb://127.0.0.1:27017
+  MongoCache:
+    - Host: 127.0.0.1:6379
+      Pass:
+      Type: node
+  DB: lightIM
+  Collection: History
+
+MessageConf:
+  Uri: mongodb://127.0.0.1:27017
+  MongoCache:
+    - Host: 127.0.0.1:6379
+      Pass:
+      Type: node
+  DB: lightIM
+  Collection: Message
+
+MsgReader:
+  Brokers:
+    - 127.0.0.1:9092
+  Topic: edge.tcp.chat
+  GroupName: edge.tcp.chat.consumer

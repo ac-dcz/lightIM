@@ -19,6 +19,7 @@ import (
 const _ = grpc.SupportPackageIsVersion7
 
 const (
+	Message_CreateNew_FullMethodName       = "/message.Message/CreateNew"
 	Message_GetHistory_FullMethodName      = "/message.Message/GetHistory"
 	Message_GetGroupHistory_FullMethodName = "/message.Message/GetGroupHistory"
 	Message_GetUnRead_FullMethodName       = "/message.Message/GetUnRead"
@@ -30,6 +31,7 @@ const (
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type MessageClient interface {
+	CreateNew(ctx context.Context, in *CreateNewReq, opts ...grpc.CallOption) (*CreateNewResp, error)
 	GetHistory(ctx context.Context, in *HistoryReq, opts ...grpc.CallOption) (*HistoryResp, error)
 	GetGroupHistory(ctx context.Context, in *GroupHistoryReq, opts ...grpc.CallOption) (*GroupHistoryResp, error)
 	GetUnRead(ctx context.Context, in *UnReadReq, opts ...grpc.CallOption) (*UnReadResp, error)
@@ -43,6 +45,15 @@ type messageClient struct {
 
 func NewMessageClient(cc grpc.ClientConnInterface) MessageClient {
 	return &messageClient{cc}
+}
+
+func (c *messageClient) CreateNew(ctx context.Context, in *CreateNewReq, opts ...grpc.CallOption) (*CreateNewResp, error) {
+	out := new(CreateNewResp)
+	err := c.cc.Invoke(ctx, Message_CreateNew_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
 }
 
 func (c *messageClient) GetHistory(ctx context.Context, in *HistoryReq, opts ...grpc.CallOption) (*HistoryResp, error) {
@@ -94,6 +105,7 @@ func (c *messageClient) UpdateMsgStatus(ctx context.Context, in *UpdateMsgStatus
 // All implementations must embed UnimplementedMessageServer
 // for forward compatibility
 type MessageServer interface {
+	CreateNew(context.Context, *CreateNewReq) (*CreateNewResp, error)
 	GetHistory(context.Context, *HistoryReq) (*HistoryResp, error)
 	GetGroupHistory(context.Context, *GroupHistoryReq) (*GroupHistoryResp, error)
 	GetUnRead(context.Context, *UnReadReq) (*UnReadResp, error)
@@ -106,6 +118,9 @@ type MessageServer interface {
 type UnimplementedMessageServer struct {
 }
 
+func (UnimplementedMessageServer) CreateNew(context.Context, *CreateNewReq) (*CreateNewResp, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method CreateNew not implemented")
+}
 func (UnimplementedMessageServer) GetHistory(context.Context, *HistoryReq) (*HistoryResp, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetHistory not implemented")
 }
@@ -132,6 +147,24 @@ type UnsafeMessageServer interface {
 
 func RegisterMessageServer(s grpc.ServiceRegistrar, srv MessageServer) {
 	s.RegisterService(&Message_ServiceDesc, srv)
+}
+
+func _Message_CreateNew_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(CreateNewReq)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(MessageServer).CreateNew(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: Message_CreateNew_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(MessageServer).CreateNew(ctx, req.(*CreateNewReq))
+	}
+	return interceptor(ctx, in, info, handler)
 }
 
 func _Message_GetHistory_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
@@ -231,6 +264,10 @@ var Message_ServiceDesc = grpc.ServiceDesc{
 	ServiceName: "message.Message",
 	HandlerType: (*MessageServer)(nil),
 	Methods: []grpc.MethodDesc{
+		{
+			MethodName: "CreateNew",
+			Handler:    _Message_CreateNew_Handler,
+		},
 		{
 			MethodName: "GetHistory",
 			Handler:    _Message_GetHistory_Handler,

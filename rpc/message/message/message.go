@@ -14,10 +14,13 @@ import (
 
 type (
 	Base                = types.Base
+	CreateNewReq        = types.CreateNewReq
+	CreateNewResp       = types.CreateNewResp
 	GroupHistoryReq     = types.GroupHistoryReq
 	GroupHistoryResp    = types.GroupHistoryResp
 	HistoryReq          = types.HistoryReq
 	HistoryResp         = types.HistoryResp
+	MsgEntry            = types.MsgEntry
 	MsgReq              = types.MsgReq
 	MsgResp             = types.MsgResp
 	UnReadReq           = types.UnReadReq
@@ -26,6 +29,7 @@ type (
 	UpdateMsgStatusResp = types.UpdateMsgStatusResp
 
 	Message interface {
+		CreateNew(ctx context.Context, in *CreateNewReq, opts ...grpc.CallOption) (*CreateNewResp, error)
 		GetHistory(ctx context.Context, in *HistoryReq, opts ...grpc.CallOption) (*HistoryResp, error)
 		GetGroupHistory(ctx context.Context, in *GroupHistoryReq, opts ...grpc.CallOption) (*GroupHistoryResp, error)
 		GetUnRead(ctx context.Context, in *UnReadReq, opts ...grpc.CallOption) (*UnReadResp, error)
@@ -42,6 +46,11 @@ func NewMessage(cli zrpc.Client) Message {
 	return &defaultMessage{
 		cli: cli,
 	}
+}
+
+func (m *defaultMessage) CreateNew(ctx context.Context, in *CreateNewReq, opts ...grpc.CallOption) (*CreateNewResp, error) {
+	client := types.NewMessageClient(m.cli.Conn())
+	return client.CreateNew(ctx, in, opts...)
 }
 
 func (m *defaultMessage) GetHistory(ctx context.Context, in *HistoryReq, opts ...grpc.CallOption) (*HistoryResp, error) {
