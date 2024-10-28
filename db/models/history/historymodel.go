@@ -9,6 +9,7 @@ import (
 	"go.mongodb.org/mongo-driver/mongo/options"
 	"lightIM/db/models/message"
 	"strconv"
+	"time"
 )
 
 var _ HistoryModel = (*customHistoryModel)(nil)
@@ -18,11 +19,14 @@ type (
 	// and implement the added methods in customHistoryModel.
 	HistoryModel interface {
 		historyModel
+		CreateNew(ctx context.Context, id int64, isGroup bool) error
 		GetUnRead(ctx context.Context, uid int64) ([]message.Message, error)
 		AddUnRead(ctx context.Context, uid int64, msg *message.Message) error
 		RemoveUnRead(ctx context.Context, uid int64, msgId ...primitive.ObjectID) error
 		AddHistory(ctx context.Context, uid, to int64, msgId ...primitive.ObjectID) error
 		GetHistories(ctx context.Context, uid, to int64) ([]Entry, error)
+		AddGroupHistory(ctx context.Context, gid, from int64, msgId ...primitive.ObjectID) error
+		GetGroupHistories(ctx context.Context, gid int64) ([]GroupEntry, error)
 	}
 
 	customHistoryModel struct {
@@ -32,12 +36,29 @@ type (
 
 const prefixHistoryUnReadCacheKey = "cache:history:unread:uid:"
 const prefixHistoryEntryCacheKey = "cache:history:entry:uid:"
+const prefixHistoryGroupEntryCacheKey = "cache:history:group:uid:"
 
-func (c *customHistoryModel) createHistory(ctx context.Context, uid int64) error {
-	h := &History{
-		Uid: uid,
+func (c *customHistoryModel) CreateNew(ctx context.Context, id int64, isGroup bool) error {
+	if isGroup {
+		item := &GroupHistory{
+			ID:       primitive.NewObjectID(),
+			Gid:      id,
+			CreateAt: time.Now(),
+			UpdateAt: time.Now(),
+		}
+		if _, err := c.conn.InsertOneNoCache(ctx, item); err != nil {
+			return err
+		}
+	} else {
+		item := &History{
+			Uid: id,
+		}
+		if err := c.Insert(ctx, item); err != nil {
+			return err
+		}
 	}
-	return c.Insert(ctx, h)
+
+	return nil
 }
 
 func (c *customHistoryModel) GetUnRead(ctx context.Context, uid int64) ([]message.Message, error) {
@@ -69,11 +90,9 @@ func (c *customHistoryModel) RemoveUnRead(ctx context.Context, uid int64, msgId 
 func (c *customHistoryModel) AddHistory(ctx context.Context, uid, to int64, msgId ...primitive.ObjectID) error {
 	opts := options.Update().SetUpsert(true)
 	key := prefixHistoryEntryCacheKey + strconv.FormatInt(uid, 10)
-	if e, err := c.GetHistories(ctx, uid, to); err == nil && len(e) > 0 {
-		if _, err := c.conn.UpdateOne(ctx, key, bson.M{"uid": uid, "histories.to": to}, bson.M{"$push": bson.M{"histories.$.msgList": bson.M{"$each": msgId}}}, opts); err != nil {
-			return err
-		}
-	} else {
+
+	if _, err := c.conn.UpdateOne(ctx, key, bson.M{"uid": uid, "histories.to": to},
+		bson.M{"$push": bson.M{"histories.$.msgList": bson.M{"$each": msgId}}}, opts); err != nil {
 		entry := Entry{
 			To:      to,
 			MsgList: msgId,
@@ -85,11 +104,37 @@ func (c *customHistoryModel) AddHistory(ctx context.Context, uid, to int64, msgI
 	return nil
 }
 
+func (c *customHistoryModel) AddGroupHistory(ctx context.Context, gid, from int64, msgId ...primitive.ObjectID) error {
+	opts := options.Update().SetUpsert(true)
+	key := prefixHistoryGroupEntryCacheKey + strconv.FormatInt(gid, 10)
+	if _, err := c.conn.UpdateOne(ctx, key, bson.M{"_gid": gid, "histories.from": from},
+		bson.M{"$push": bson.M{"histories.$.msgList": bson.M{"$each": msgId}}}, opts); err != nil {
+		entry := GroupEntry{
+			From:    from,
+			MsgList: msgId,
+		}
+		if _, err := c.conn.UpdateOne(ctx, key, bson.M{"gid": gid}, bson.M{"$push": bson.M{"histories": entry}}, opts); err != nil {
+			return err
+		}
+	}
+	return nil
+}
+
 func (c *customHistoryModel) GetHistories(ctx context.Context, uid, to int64) ([]Entry, error) {
 	key := prefixHistoryEntryCacheKey + strconv.FormatInt(uid, 10)
 	var h History
 	opts := options.FindOne().SetProjection(bson.M{"histories": 1})
 	if err := c.conn.FindOne(ctx, key, &h, bson.M{"uid": uid, "histories.to": to}, opts); err != nil {
+		return nil, err
+	}
+	return h.Histories, nil
+}
+
+func (c *customHistoryModel) GetGroupHistories(ctx context.Context, gid int64) ([]GroupEntry, error) {
+	key := prefixHistoryGroupEntryCacheKey + strconv.FormatInt(gid, 10)
+	var h GroupHistory
+	opts := options.FindOne().SetProjection(bson.M{"histories": 1})
+	if err := c.conn.FindOne(ctx, key, &h, bson.M{"gid": gid}, opts); err != nil {
 		return nil, err
 	}
 	return h.Histories, nil

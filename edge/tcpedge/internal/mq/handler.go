@@ -10,7 +10,6 @@ import (
 )
 
 type pair struct {
-	svcCtx   *svc.ServiceContext
 	Msg      *kafka.Message
 	CallBack func(msg *kafka.Message, err error)
 }
@@ -20,10 +19,10 @@ type consumerHandler struct {
 	workPool *ants.PoolWithFunc
 }
 
-func newConsumerHandler(svcCtx *svc.ServiceContext, opt *consumerOptions) (*consumerHandler, error) {
+func newConsumerHandler(svcCtx *svc.ServiceContext, opt *ConsumerOptions) (*consumerHandler, error) {
 	if opt == nil {
-		opt = &consumerOptions{
-			poolSize: params.EdgeTcpServer.WorkPoolSize,
+		opt = &ConsumerOptions{
+			PoolSize: params.EdgeTcpServer.MqWorkPoolSize,
 		}
 	}
 	h := &consumerHandler{
@@ -31,7 +30,7 @@ func newConsumerHandler(svcCtx *svc.ServiceContext, opt *consumerOptions) (*cons
 	}
 
 	//work pool
-	pool, err := ants.NewPoolWithFunc(opt.poolSize, func(i interface{}) {
+	pool, err := ants.NewPoolWithFunc(opt.PoolSize, func(i interface{}) {
 		if msg, ok := i.(*pair); ok {
 			var err error
 			defer func() {
@@ -60,5 +59,11 @@ func (h *consumerHandler) HandleMessage(msg *kafka.Message, callback func(msg *k
 
 func (h *consumerHandler) handle(msg *kafka.Message) error {
 
+	return nil
+}
+func (h *consumerHandler) Close() error {
+	if h.workPool != nil {
+		h.workPool.Release()
+	}
 	return nil
 }

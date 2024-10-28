@@ -40,7 +40,7 @@ var ApiVerifyCode = &apiVerifyCode{
 }
 
 type edgeTcpServer struct {
-	WorkPoolSize       int
+	MqWorkPoolSize     int
 	ReqChannelBuf      int
 	AuthTimeout        time.Duration
 	UnAuthCleanTimeout time.Duration
@@ -50,7 +50,7 @@ type edgeTcpServer struct {
 }
 
 var EdgeTcpServer = &edgeTcpServer{
-	WorkPoolSize:       10,
+	MqWorkPoolSize:     10,
 	ReqChannelBuf:      100,
 	AuthTimeout:        time.Second * 30,
 	UnAuthCleanTimeout: time.Second * 5,
@@ -77,4 +77,12 @@ var RpcOnline = &rpcOnline{
 	EdgeOnline:      "biz:rpc:online:edge:",
 	EdgeInfo:        "biz:rpc:online:info:",
 	EdgeInfoTimeout: time.Second * 0,
+}
+
+type rpcMessage struct {
+	MqWorkPoolSize int
+}
+
+var RpcMessage = &rpcMessage{
+	MqWorkPoolSize: 10,
 }

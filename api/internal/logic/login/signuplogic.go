@@ -4,6 +4,7 @@ import (
 	"context"
 	"lightIM/common/codes"
 	"lightIM/common/params"
+	"lightIM/rpc/message/message"
 
 	"lightIM/api/internal/svc"
 	"lightIM/api/internal/types"
@@ -67,8 +68,13 @@ func (l *SignUpLogic) SignUp(req *types.SignUpReq) (resp *types.SignUpResp, err 
 				Msg:  resp.Base.Msg,
 			},
 		}, nil
+	} else {
+		//don`t care
+		_, _ = l.svcCtx.MessageRpc.CreateNew(l.ctx, &message.CreateNewReq{
+			Id:      resp.Uid,
+			IsGroup: false,
+		})
 	}
-
 	return &types.SignUpResp{
 		Base: types.Base{
 			Code: codes.OK.Code,

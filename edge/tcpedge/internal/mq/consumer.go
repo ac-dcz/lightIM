@@ -8,8 +8,8 @@ import (
 	"lightIM/edge/tcpedge/internal/svc"
 )
 
-type consumerOptions struct {
-	poolSize int
+type ConsumerOptions struct {
+	PoolSize int
 }
 
 type ImConsumer struct {
@@ -18,7 +18,7 @@ type ImConsumer struct {
 	reader  *mq.Reader
 }
 
-func NewImConsumer(svcCtx *svc.ServiceContext, reader *mq.Reader, opt *consumerOptions) (*ImConsumer, error) {
+func NewImConsumer(svcCtx *svc.ServiceContext, reader *mq.Reader, opt *ConsumerOptions) (*ImConsumer, error) {
 	handler, err := newConsumerHandler(svcCtx, opt)
 	if err != nil {
 		return nil, err
@@ -52,5 +52,8 @@ func (m *ImConsumer) Start() {
 }
 
 func (m *ImConsumer) Stop() error {
+	if m.handler != nil {
+		_ = m.handler.Close()
+	}
 	return m.reader.Close()
 }

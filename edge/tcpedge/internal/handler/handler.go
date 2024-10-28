@@ -35,7 +35,7 @@ type ImHandler struct {
 func NewImHandler(opt *ImHandlerOptions) (*ImHandler, error) {
 	if opt == nil {
 		opt = &ImHandlerOptions{
-			poolSize:    params.EdgeTcpServer.WorkPoolSize,
+			poolSize:    params.EdgeTcpServer.MqWorkPoolSize,
 			reqChanSize: params.EdgeTcpServer.ReqChannelBuf,
 		}
 	}

@@ -33,7 +33,7 @@ func (l *MultiChatLogic) MultiChat(msg *types.MultiChatMsg, _ *imnet.ImConn) (*t
 			Type:         msg.Content.Type,
 			Status:       params.UnRead,
 			From:         msg.From,
-			To:           msg.Group,
+			Group:        msg.Group,
 			IsGroup:      true,
 			EncodingType: text.EncodingType,
 			Data:         text.Body,

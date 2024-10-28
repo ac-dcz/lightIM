@@ -13,6 +13,12 @@ UserRpc:
       - 127.0.0.1:2379
     Key: user.rpc
 
+MessageRpc:
+  Etcd:
+    Hosts:
+      - 127.0.0.1:2379
+    Key: message.rpc
+
 Auth:
   AccessSecret: AFEFBCDDEFC
   AccessExpire: 3600

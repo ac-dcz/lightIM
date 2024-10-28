@@ -22,6 +22,7 @@ func NewWriterSync(conf *WriterConf) *Writer {
 		Topic:                  conf.Topic,
 		AllowAutoTopicCreation: true,
 		RequiredAcks:           kafka.RequireOne,
+		Balancer:               &kafka.Hash{},
 		Logger:                 log.New(os.Stdout, "[kafka]", log.LstdFlags),
 		ErrorLogger:            log.New(os.Stdout, "[kafka]", log.LstdFlags),
 	}
