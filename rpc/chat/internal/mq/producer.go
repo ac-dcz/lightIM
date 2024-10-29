@@ -17,8 +17,6 @@ func NewProducer() *Producer {
 }
 
 func (p *Producer) writer(key string, conf mq.WriterConf) *mq.Writer {
-	p.mu.Lock()
-	defer p.mu.Unlock()
 	if w, ok := p.writers[key]; ok {
 		return w
 	} else {

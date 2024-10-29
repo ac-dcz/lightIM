@@ -10,3 +10,5 @@ OnlineRpc:
     Hosts:
       - 127.0.0.1:2379
     Key: online.rpc
+EdgeEtcdHosts:
+  - 127.0.0.1:2379

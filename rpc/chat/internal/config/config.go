@@ -6,5 +6,6 @@ import (
 
 type Config struct {
 	zrpc.RpcServerConf
-	OnlineRpc zrpc.RpcClientConf
+	EdgeEtcdHosts []string
+	OnlineRpc     zrpc.RpcClientConf
 }
