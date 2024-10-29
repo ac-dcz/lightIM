@@ -13,6 +13,8 @@ import (
 )
 
 type (
+	AckReq              = types.AckReq
+	AckResp             = types.AckResp
 	Base                = types.Base
 	CreateNewReq        = types.CreateNewReq
 	CreateNewResp       = types.CreateNewResp
@@ -35,6 +37,7 @@ type (
 		GetUnRead(ctx context.Context, in *UnReadReq, opts ...grpc.CallOption) (*UnReadResp, error)
 		GetMessage(ctx context.Context, in *MsgReq, opts ...grpc.CallOption) (*MsgResp, error)
 		UpdateMsgStatus(ctx context.Context, in *UpdateMsgStatusReq, opts ...grpc.CallOption) (*UpdateMsgStatusResp, error)
+		AckMsg(ctx context.Context, in *AckReq, opts ...grpc.CallOption) (*AckResp, error)
 	}
 
 	defaultMessage struct {
@@ -76,4 +79,9 @@ func (m *defaultMessage) GetMessage(ctx context.Context, in *MsgReq, opts ...grp
 func (m *defaultMessage) UpdateMsgStatus(ctx context.Context, in *UpdateMsgStatusReq, opts ...grpc.CallOption) (*UpdateMsgStatusResp, error) {
 	client := types.NewMessageClient(m.cli.Conn())
 	return client.UpdateMsgStatus(ctx, in, opts...)
+}
+
+func (m *defaultMessage) AckMsg(ctx context.Context, in *AckReq, opts ...grpc.CallOption) (*AckResp, error) {
+	client := types.NewMessageClient(m.cli.Conn())
+	return client.AckMsg(ctx, in, opts...)
 }

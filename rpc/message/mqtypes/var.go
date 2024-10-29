@@ -6,6 +6,7 @@ import (
 )
 
 type Message struct {
+	MsgId        string             `json:"msg_id"`
 	Type         params.ContentType `bson:"type" json:"type"`
 	Status       params.MsgStatus   `bson:"status" json:"status"`
 	From         int64              `bson:"from" json:"from"`

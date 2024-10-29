@@ -25,6 +25,7 @@ const (
 	Message_GetUnRead_FullMethodName       = "/message.Message/GetUnRead"
 	Message_GetMessage_FullMethodName      = "/message.Message/GetMessage"
 	Message_UpdateMsgStatus_FullMethodName = "/message.Message/UpdateMsgStatus"
+	Message_AckMsg_FullMethodName          = "/message.Message/AckMsg"
 )
 
 // MessageClient is the client API for Message service.
@@ -37,6 +38,7 @@ type MessageClient interface {
 	GetUnRead(ctx context.Context, in *UnReadReq, opts ...grpc.CallOption) (*UnReadResp, error)
 	GetMessage(ctx context.Context, in *MsgReq, opts ...grpc.CallOption) (*MsgResp, error)
 	UpdateMsgStatus(ctx context.Context, in *UpdateMsgStatusReq, opts ...grpc.CallOption) (*UpdateMsgStatusResp, error)
+	AckMsg(ctx context.Context, in *AckReq, opts ...grpc.CallOption) (*AckResp, error)
 }
 
 type messageClient struct {
@@ -101,6 +103,15 @@ func (c *messageClient) UpdateMsgStatus(ctx context.Context, in *UpdateMsgStatus
 	return out, nil
 }
 
+func (c *messageClient) AckMsg(ctx context.Context, in *AckReq, opts ...grpc.CallOption) (*AckResp, error) {
+	out := new(AckResp)
+	err := c.cc.Invoke(ctx, Message_AckMsg_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // MessageServer is the server API for Message service.
 // All implementations must embed UnimplementedMessageServer
 // for forward compatibility
@@ -111,6 +122,7 @@ type MessageServer interface {
 	GetUnRead(context.Context, *UnReadReq) (*UnReadResp, error)
 	GetMessage(context.Context, *MsgReq) (*MsgResp, error)
 	UpdateMsgStatus(context.Context, *UpdateMsgStatusReq) (*UpdateMsgStatusResp, error)
+	AckMsg(context.Context, *AckReq) (*AckResp, error)
 	mustEmbedUnimplementedMessageServer()
 }
 
@@ -135,6 +147,9 @@ func (UnimplementedMessageServer) GetMessage(context.Context, *MsgReq) (*MsgResp
 }
 func (UnimplementedMessageServer) UpdateMsgStatus(context.Context, *UpdateMsgStatusReq) (*UpdateMsgStatusResp, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method UpdateMsgStatus not implemented")
+}
+func (UnimplementedMessageServer) AckMsg(context.Context, *AckReq) (*AckResp, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method AckMsg not implemented")
 }
 func (UnimplementedMessageServer) mustEmbedUnimplementedMessageServer() {}
 
@@ -257,6 +272,24 @@ func _Message_UpdateMsgStatus_Handler(srv interface{}, ctx context.Context, dec 
 	return interceptor(ctx, in, info, handler)
 }
 
+func _Message_AckMsg_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(AckReq)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(MessageServer).AckMsg(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: Message_AckMsg_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(MessageServer).AckMsg(ctx, req.(*AckReq))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // Message_ServiceDesc is the grpc.ServiceDesc for Message service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -287,6 +320,10 @@ var Message_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "UpdateMsgStatus",
 			Handler:    _Message_UpdateMsgStatus_Handler,
+		},
+		{
+			MethodName: "AckMsg",
+			Handler:    _Message_AckMsg_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

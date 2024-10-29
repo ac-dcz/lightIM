@@ -798,6 +798,108 @@ func (x *UpdateMsgStatusResp) GetBase() *Base {
 	return nil
 }
 
+type AckReq struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	Uid   int64  `protobuf:"varint,1,opt,name=Uid,proto3" json:"Uid,omitempty"`
+	MsgId string `protobuf:"bytes,2,opt,name=MsgId,proto3" json:"MsgId,omitempty"`
+}
+
+func (x *AckReq) Reset() {
+	*x = AckReq{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_message_proto_msgTypes[14]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *AckReq) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*AckReq) ProtoMessage() {}
+
+func (x *AckReq) ProtoReflect() protoreflect.Message {
+	mi := &file_message_proto_msgTypes[14]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use AckReq.ProtoReflect.Descriptor instead.
+func (*AckReq) Descriptor() ([]byte, []int) {
+	return file_message_proto_rawDescGZIP(), []int{14}
+}
+
+func (x *AckReq) GetUid() int64 {
+	if x != nil {
+		return x.Uid
+	}
+	return 0
+}
+
+func (x *AckReq) GetMsgId() string {
+	if x != nil {
+		return x.MsgId
+	}
+	return ""
+}
+
+type AckResp struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	Base *Base `protobuf:"bytes,1,opt,name=base,proto3" json:"base,omitempty"`
+}
+
+func (x *AckResp) Reset() {
+	*x = AckResp{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_message_proto_msgTypes[15]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *AckResp) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*AckResp) ProtoMessage() {}
+
+func (x *AckResp) ProtoReflect() protoreflect.Message {
+	mi := &file_message_proto_msgTypes[15]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use AckResp.ProtoReflect.Descriptor instead.
+func (*AckResp) Descriptor() ([]byte, []int) {
+	return file_message_proto_rawDescGZIP(), []int{15}
+}
+
+func (x *AckResp) GetBase() *Base {
+	if x != nil {
+		return x.Base
+	}
+	return nil
+}
+
 var File_message_proto protoreflect.FileDescriptor
 
 var file_message_proto_rawDesc = []byte{
@@ -868,7 +970,13 @@ var file_message_proto_rawDesc = []byte{
 	0x61, 0x74, 0x65, 0x4d, 0x73, 0x67, 0x53, 0x74, 0x61, 0x74, 0x75, 0x73, 0x52, 0x65, 0x73, 0x70,
 	0x12, 0x21, 0x0a, 0x04, 0x62, 0x61, 0x73, 0x65, 0x18, 0x01, 0x20, 0x01, 0x28, 0x0b, 0x32, 0x0d,
 	0x2e, 0x6d, 0x65, 0x73, 0x73, 0x61, 0x67, 0x65, 0x2e, 0x42, 0x61, 0x73, 0x65, 0x52, 0x04, 0x62,
-	0x61, 0x73, 0x65, 0x32, 0xfb, 0x02, 0x0a, 0x07, 0x4d, 0x65, 0x73, 0x73, 0x61, 0x67, 0x65, 0x12,
+	0x61, 0x73, 0x65, 0x22, 0x30, 0x0a, 0x06, 0x41, 0x63, 0x6b, 0x52, 0x65, 0x71, 0x12, 0x10, 0x0a,
+	0x03, 0x55, 0x69, 0x64, 0x18, 0x01, 0x20, 0x01, 0x28, 0x03, 0x52, 0x03, 0x55, 0x69, 0x64, 0x12,
+	0x14, 0x0a, 0x05, 0x4d, 0x73, 0x67, 0x49, 0x64, 0x18, 0x02, 0x20, 0x01, 0x28, 0x09, 0x52, 0x05,
+	0x4d, 0x73, 0x67, 0x49, 0x64, 0x22, 0x2c, 0x0a, 0x07, 0x41, 0x63, 0x6b, 0x52, 0x65, 0x73, 0x70,
+	0x12, 0x21, 0x0a, 0x04, 0x62, 0x61, 0x73, 0x65, 0x18, 0x01, 0x20, 0x01, 0x28, 0x0b, 0x32, 0x0d,
+	0x2e, 0x6d, 0x65, 0x73, 0x73, 0x61, 0x67, 0x65, 0x2e, 0x42, 0x61, 0x73, 0x65, 0x52, 0x04, 0x62,
+	0x61, 0x73, 0x65, 0x32, 0xa8, 0x03, 0x0a, 0x07, 0x4d, 0x65, 0x73, 0x73, 0x61, 0x67, 0x65, 0x12,
 	0x3a, 0x0a, 0x09, 0x43, 0x72, 0x65, 0x61, 0x74, 0x65, 0x4e, 0x65, 0x77, 0x12, 0x15, 0x2e, 0x6d,
 	0x65, 0x73, 0x73, 0x61, 0x67, 0x65, 0x2e, 0x43, 0x72, 0x65, 0x61, 0x74, 0x65, 0x4e, 0x65, 0x77,
 	0x52, 0x65, 0x71, 0x1a, 0x16, 0x2e, 0x6d, 0x65, 0x73, 0x73, 0x61, 0x67, 0x65, 0x2e, 0x43, 0x72,
@@ -892,8 +1000,11 @@ var file_message_proto_rawDesc = []byte{
 	0x2e, 0x55, 0x70, 0x64, 0x61, 0x74, 0x65, 0x4d, 0x73, 0x67, 0x53, 0x74, 0x61, 0x74, 0x75, 0x73,
 	0x52, 0x65, 0x71, 0x1a, 0x1c, 0x2e, 0x6d, 0x65, 0x73, 0x73, 0x61, 0x67, 0x65, 0x2e, 0x55, 0x70,
 	0x64, 0x61, 0x74, 0x65, 0x4d, 0x73, 0x67, 0x53, 0x74, 0x61, 0x74, 0x75, 0x73, 0x52, 0x65, 0x73,
-	0x70, 0x42, 0x09, 0x5a, 0x07, 0x2e, 0x2f, 0x74, 0x79, 0x70, 0x65, 0x73, 0x62, 0x06, 0x70, 0x72,
-	0x6f, 0x74, 0x6f, 0x33,
+	0x70, 0x12, 0x2b, 0x0a, 0x06, 0x41, 0x63, 0x6b, 0x4d, 0x73, 0x67, 0x12, 0x0f, 0x2e, 0x6d, 0x65,
+	0x73, 0x73, 0x61, 0x67, 0x65, 0x2e, 0x41, 0x63, 0x6b, 0x52, 0x65, 0x71, 0x1a, 0x10, 0x2e, 0x6d,
+	0x65, 0x73, 0x73, 0x61, 0x67, 0x65, 0x2e, 0x41, 0x63, 0x6b, 0x52, 0x65, 0x73, 0x70, 0x42, 0x09,
+	0x5a, 0x07, 0x2e, 0x2f, 0x74, 0x79, 0x70, 0x65, 0x73, 0x62, 0x06, 0x70, 0x72, 0x6f, 0x74, 0x6f,
+	0x33,
 }
 
 var (
@@ -908,7 +1019,7 @@ func file_message_proto_rawDescGZIP() []byte {
 	return file_message_proto_rawDescData
 }
 
-var file_message_proto_msgTypes = make([]protoimpl.MessageInfo, 14)
+var file_message_proto_msgTypes = make([]protoimpl.MessageInfo, 16)
 var file_message_proto_goTypes = []interface{}{
 	(*Base)(nil),                // 0: message.Base
 	(*CreateNewReq)(nil),        // 1: message.CreateNewReq
@@ -924,6 +1035,8 @@ var file_message_proto_goTypes = []interface{}{
 	(*MsgResp)(nil),             // 11: message.MsgResp
 	(*UpdateMsgStatusReq)(nil),  // 12: message.UpdateMsgStatusReq
 	(*UpdateMsgStatusResp)(nil), // 13: message.UpdateMsgStatusResp
+	(*AckReq)(nil),              // 14: message.AckReq
+	(*AckResp)(nil),             // 15: message.AckResp
 }
 var file_message_proto_depIdxs = []int32{
 	0,  // 0: message.CreateNewResp.base:type_name -> message.Base
@@ -936,23 +1049,26 @@ var file_message_proto_depIdxs = []int32{
 	0,  // 7: message.MsgResp.base:type_name -> message.Base
 	3,  // 8: message.MsgResp.msg:type_name -> message.MsgEntry
 	0,  // 9: message.UpdateMsgStatusResp.base:type_name -> message.Base
-	1,  // 10: message.Message.CreateNew:input_type -> message.CreateNewReq
-	4,  // 11: message.Message.GetHistory:input_type -> message.HistoryReq
-	6,  // 12: message.Message.GetGroupHistory:input_type -> message.GroupHistoryReq
-	8,  // 13: message.Message.GetUnRead:input_type -> message.UnReadReq
-	10, // 14: message.Message.GetMessage:input_type -> message.MsgReq
-	12, // 15: message.Message.UpdateMsgStatus:input_type -> message.UpdateMsgStatusReq
-	2,  // 16: message.Message.CreateNew:output_type -> message.CreateNewResp
-	5,  // 17: message.Message.GetHistory:output_type -> message.HistoryResp
-	7,  // 18: message.Message.GetGroupHistory:output_type -> message.GroupHistoryResp
-	9,  // 19: message.Message.GetUnRead:output_type -> message.UnReadResp
-	11, // 20: message.Message.GetMessage:output_type -> message.MsgResp
-	13, // 21: message.Message.UpdateMsgStatus:output_type -> message.UpdateMsgStatusResp
-	16, // [16:22] is the sub-list for method output_type
-	10, // [10:16] is the sub-list for method input_type
-	10, // [10:10] is the sub-list for extension type_name
-	10, // [10:10] is the sub-list for extension extendee
-	0,  // [0:10] is the sub-list for field type_name
+	0,  // 10: message.AckResp.base:type_name -> message.Base
+	1,  // 11: message.Message.CreateNew:input_type -> message.CreateNewReq
+	4,  // 12: message.Message.GetHistory:input_type -> message.HistoryReq
+	6,  // 13: message.Message.GetGroupHistory:input_type -> message.GroupHistoryReq
+	8,  // 14: message.Message.GetUnRead:input_type -> message.UnReadReq
+	10, // 15: message.Message.GetMessage:input_type -> message.MsgReq
+	12, // 16: message.Message.UpdateMsgStatus:input_type -> message.UpdateMsgStatusReq
+	14, // 17: message.Message.AckMsg:input_type -> message.AckReq
+	2,  // 18: message.Message.CreateNew:output_type -> message.CreateNewResp
+	5,  // 19: message.Message.GetHistory:output_type -> message.HistoryResp
+	7,  // 20: message.Message.GetGroupHistory:output_type -> message.GroupHistoryResp
+	9,  // 21: message.Message.GetUnRead:output_type -> message.UnReadResp
+	11, // 22: message.Message.GetMessage:output_type -> message.MsgResp
+	13, // 23: message.Message.UpdateMsgStatus:output_type -> message.UpdateMsgStatusResp
+	15, // 24: message.Message.AckMsg:output_type -> message.AckResp
+	18, // [18:25] is the sub-list for method output_type
+	11, // [11:18] is the sub-list for method input_type
+	11, // [11:11] is the sub-list for extension type_name
+	11, // [11:11] is the sub-list for extension extendee
+	0,  // [0:11] is the sub-list for field type_name
 }
 
 func init() { file_message_proto_init() }
@@ -1129,6 +1245,30 @@ func file_message_proto_init() {
 				return nil
 			}
 		}
+		file_message_proto_msgTypes[14].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*AckReq); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_message_proto_msgTypes[15].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*AckResp); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
 	}
 	type x struct{}
 	out := protoimpl.TypeBuilder{
@@ -1136,7 +1276,7 @@ func file_message_proto_init() {
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: file_message_proto_rawDesc,
 			NumEnums:      0,
-			NumMessages:   14,
+			NumMessages:   16,
 			NumExtensions: 0,
 			NumServices:   1,
 		},

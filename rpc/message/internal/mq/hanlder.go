@@ -1,12 +1,15 @@
 package mq
 
 import (
+	"context"
 	"fmt"
 	"github.com/panjf2000/ants/v2"
 	"github.com/segmentio/kafka-go"
 	"github.com/zeromicro/go-zero/core/logx"
 	"lightIM/common/params"
+	"lightIM/rpc/message/internal/logic/mq"
 	"lightIM/rpc/message/internal/svc"
+	"lightIM/rpc/message/mqtypes"
 )
 
 type pair struct {
@@ -54,7 +57,15 @@ func (h *Handler) HandleMessage(msg *kafka.Message, callBack func(msg *kafka.Mes
 }
 
 func (h *Handler) handle(msg *kafka.Message) error {
-
+	m := &mqtypes.Message{}
+	if err := m.Decode(msg.Value); err != nil {
+		logx.Errorf("mq decode msg error: %v", err)
+		return err
+	}
+	l := mq.NewConsumeLogic(h.svcCtx)
+	if err := l.StoreMessage(context.Background(), m); err != nil {
+		return err
+	}
 	return nil
 }
 

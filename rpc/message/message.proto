@@ -75,6 +75,15 @@ message UpdateMsgStatusResp{
   Base base = 1;
 }
 
+message AckReq{
+  int64 Uid = 1;
+  string MsgId = 2;
+}
+
+message AckResp{
+  Base base = 1;
+}
+
 service Message {
   rpc CreateNew(CreateNewReq) returns(CreateNewResp);
   rpc GetHistory(HistoryReq) returns(HistoryResp);
@@ -82,5 +91,6 @@ service Message {
   rpc GetUnRead(UnReadReq) returns(UnReadResp);
   rpc GetMessage(MsgReq) returns(MsgResp);
   rpc UpdateMsgStatus(UpdateMsgStatusReq) returns(UpdateMsgStatusResp);
+  rpc AckMsg(AckReq) returns(AckResp);
 }
 

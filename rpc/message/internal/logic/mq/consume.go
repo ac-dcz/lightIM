@@ -65,6 +65,7 @@ func (l *ConsumeLogic) StoreMessage(ctx context.Context, msg *mqtypes.Message) e
 				TimeStamp:    msg.TimeStamp,
 				EncodingType: msg.EncodingType,
 				Type:         uint32(msg.Type),
+				Data:         msg.Data,
 			}); err != nil || resp.Base.Code != codes.OK.Code {
 				l.Logger.Errorf("Notify ChatRpc SingleChat error: %v,resp: %v", err, resp)
 				return err
@@ -77,6 +78,7 @@ func (l *ConsumeLogic) StoreMessage(ctx context.Context, msg *mqtypes.Message) e
 				TimeStamp:    msg.TimeStamp,
 				EncodingType: msg.EncodingType,
 				Type:         uint32(msg.Type),
+				Data:         msg.Data,
 			}); err != nil || resp.Base.Code != codes.OK.Code {
 				l.Logger.Errorf("Notify ChatRpc GroupChat error: %v,resp: %v", err, resp)
 				return err

@@ -51,3 +51,8 @@ func (s *MessageServer) UpdateMsgStatus(ctx context.Context, in *types.UpdateMsg
 	l := logic.NewUpdateMsgStatusLogic(ctx, s.svcCtx)
 	return l.UpdateMsgStatus(in)
 }
+
+func (s *MessageServer) AckMsg(ctx context.Context, in *types.AckReq) (*types.AckResp, error) {
+	l := logic.NewAckMsgLogic(ctx, s.svcCtx)
+	return l.AckMsg(in)
+}
