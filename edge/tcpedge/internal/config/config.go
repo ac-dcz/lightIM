@@ -5,23 +5,27 @@ import (
 	"lightIM/common/mq"
 	"lightIM/common/params"
 	"lightIM/common/sd"
+	"strconv"
 )
 
 type EdgeTcpServerConf struct {
-	Host     string
-	Key      string        //Etcd key
+	Host string
+	Etcd struct {
+		Host []string
+		Key  string //Etcd key
+	}
 	EdgeId   int64         //Edge id
 	KqReader mq.ReaderConf //kafka
 	KqWriter mq.WriterConf
 }
 
 func (e *EdgeTcpServerConf) EtcdKey() string {
-	return e.Key
+	return e.Etcd.Key
 }
 
 func (e *EdgeTcpServerConf) MetaData() sd.MetaData {
 	meta := make(sd.MetaData)
-	meta[params.EdgeTcpServer.EtcdEdgeId] = e.EdgeId
+	meta[params.EdgeTcpServer.EtcdEdgeId] = strconv.FormatInt(e.EdgeId, 10)
 	meta[params.EdgeTcpServer.EtcdEdgeKq] = e.KqReader
 	meta[params.EdgeTcpServer.EtcdEdgeHost] = e.Host
 	return meta
@@ -29,13 +33,10 @@ func (e *EdgeTcpServerConf) MetaData() sd.MetaData {
 
 type Config struct {
 	Edge EdgeTcpServerConf
-	Etcd struct {
-		Host []string
-	}
 	Auth struct {
 		AccessSecret string
 		AccessExpire int64
 	}
-
-	OnlineRpc zrpc.RpcClientConf
+	OnlineRpc  zrpc.RpcClientConf
+	MessageRpc zrpc.RpcClientConf
 }

@@ -76,7 +76,7 @@ func NewTcpServer(svcCtx *svc.ServiceContext, handler handler.Interface) *TcpEdg
 }
 
 func (s *TcpEdgeServer) Start() error {
-	publish, err := sd.NewPublish(s.svcCtx.C.Etcd.Host, s.svcCtx.C.Edge.EtcdKey(), s.svcCtx.C.Edge.MetaData())
+	publish, err := sd.NewPublish(s.svcCtx.C.Edge.Etcd.Host, s.svcCtx.C.Edge.EtcdKey(), s.svcCtx.C.Edge.MetaData())
 	if err != nil {
 		s.logger.Errorf("publish err: %v", err)
 		return err

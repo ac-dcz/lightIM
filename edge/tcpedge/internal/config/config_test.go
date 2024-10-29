@@ -8,14 +8,16 @@ import (
 )
 
 var testConfig = Config{
-	Etcd: struct{ Host []string }{Host: []string{"127.0.0.1:2379"}},
 	Edge: EdgeTcpServerConf{
-		Key:    "edge.tcp",
+		Etcd: struct {
+			Host []string
+			Key  string
+		}{Host: []string{"127.0.0.1:2379"}, Key: "edge.tcp"},
 		EdgeId: 1001,
 		Host:   "127.0.0.1:6000",
 		KqReader: mq.ReaderConf{
 			Topic:     "edge.tcp.1001",
-			GroupName: "edge.tcp.1001.consumer",
+			GroupName: "edge.tcp.1001.mq",
 			Brokers:   []string{"127.0.0.1:9092"},
 		},
 	},

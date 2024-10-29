@@ -5,6 +5,7 @@ import (
 	"github.com/zeromicro/go-zero/core/logx"
 	"lightIM/common/params"
 	"lightIM/edge/tcpedge/internal/handler/access"
+	"lightIM/edge/tcpedge/internal/handler/ackmsg"
 	"lightIM/edge/tcpedge/internal/handler/multichat"
 	"lightIM/edge/tcpedge/internal/handler/offline"
 	"lightIM/edge/tcpedge/internal/handler/singlechat"
@@ -78,10 +79,12 @@ func (imh *ImHandler) handle(v any) {
 		access.HandleAccessMsg(req.SvcCtx, msg, req.RemoteAddr)
 	case *types.SingleChatMsg:
 		singlechat.HandleSingleChatMsg(req.SvcCtx, msg, req.RemoteAddr)
-	case *types.MultiChatMsg:
+	case *types.GroupChatMsg:
 		multichat.HandleMultiChatMsg(req.SvcCtx, msg, req.RemoteAddr)
 	case *types.OfflineNotify:
 		offline.HandleOffline(req.SvcCtx, msg, req.RemoteAddr)
+	case *types.AckMsg:
+		ackmsg.HandleAckMsg(req.SvcCtx, msg, req.RemoteAddr)
 	default:
 		logx.Errorf("unhandle msg %v,not found msg type", msg)
 	}

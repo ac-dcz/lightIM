@@ -10,10 +10,10 @@ import (
 	"time"
 )
 
-func HandleMultiChatMsg(svcCtx *svc.ServiceContext, msg *types.MultiChatMsg, key string) {
+func HandleMultiChatMsg(svcCtx *svc.ServiceContext, msg *types.GroupChatMsg, key string) {
 	logic := multichat.NewMultiChatLogic(svcCtx)
 	var (
-		resp *types.MultiChatMsgResp
+		resp *types.GroupChatMsgResp
 		err  error
 		conn *imnet.ImConn
 		ok   bool
@@ -21,7 +21,7 @@ func HandleMultiChatMsg(svcCtx *svc.ServiceContext, msg *types.MultiChatMsg, key
 	conn, ok = svcCtx.ConnPool.GetAuthConnByAddr(key)
 	if ok {
 		if resp, err = logic.MultiChat(msg, conn); err != nil {
-			resp = &types.MultiChatMsgResp{
+			resp = &types.GroupChatMsgResp{
 				RespBase: types.RespBase{
 					Code: codes.InternalServerError.Code,
 					Msg:  err.Error(),
@@ -29,7 +29,7 @@ func HandleMultiChatMsg(svcCtx *svc.ServiceContext, msg *types.MultiChatMsg, key
 			}
 		}
 	} else if conn, ok = svcCtx.ConnPool.GetUnAuthConnByAddr(key); ok {
-		resp = &types.MultiChatMsgResp{
+		resp = &types.GroupChatMsgResp{
 			RespBase: types.RespBase{
 				Code: codes.EdgeUnAuthenticated,
 				Msg:  "UnAuthenticated",

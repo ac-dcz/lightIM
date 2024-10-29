@@ -14,7 +14,7 @@ import (
 var prefixMessageCacheKey = "cache:message:"
 
 type messageModel interface {
-	Insert(ctx context.Context, data *Message) error
+	Insert(ctx context.Context, data *Message) (*mongo.InsertOneResult,error)
 	FindOne(ctx context.Context, id string) (*Message, error)
 	Update(ctx context.Context, data *Message) (*mongo.UpdateResult, error)
 	Delete(ctx context.Context, id string) (int64, error)
@@ -28,7 +28,7 @@ func newDefaultMessageModel(conn *monc.Model) *defaultMessageModel {
 	return &defaultMessageModel{conn: conn}
 }
 
-func (m *defaultMessageModel) Insert(ctx context.Context, data *Message) error {
+func (m *defaultMessageModel) Insert(ctx context.Context, data *Message) (*mongo.InsertOneResult,error) {
 	if data.ID.IsZero() {
 		data.ID = primitive.NewObjectID()
 		data.CreateAt = time.Now()
@@ -36,8 +36,8 @@ func (m *defaultMessageModel) Insert(ctx context.Context, data *Message) error {
 	}
 
 	key := prefixMessageCacheKey + data.ID.Hex()
-	_, err := m.conn.InsertOne(ctx, key, data)
-	return err
+	r, err := m.conn.InsertOne(ctx, key, data)
+	return r,err
 }
 
 func (m *defaultMessageModel) FindOne(ctx context.Context, id string) (*Message, error) {

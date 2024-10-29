@@ -36,7 +36,7 @@ func NewSingleChatLogic(ctx context.Context, svcCtx *svc.ServiceContext) *Single
 func (l *SingleChatLogic) SingleChat(in *types.SingleChatReq) (*types.SingleChatResp, error) {
 	// todo: add your logic here and delete this line
 	if resp, err := l.svcCtx.OnlineRpc.GetRoute(l.ctx, &online.RouteReq{
-		UserId: in.From,
+		UserId: in.To,
 	}); err != nil {
 		l.Logger.Errorf("Call online rpc fail: %v", err)
 		return nil, err
@@ -54,6 +54,7 @@ func (l *SingleChatLogic) SingleChat(in *types.SingleChatReq) (*types.SingleChat
 							rdConf := &mq.ReaderConf{}
 							if err := json.Unmarshal(byt, rdConf); err == nil {
 								m := &mqtypes.Message{
+									MsgId:        in.MsgId,
 									Type:         params.ContentType(in.Type),
 									Status:       params.UnRead,
 									From:         in.From,

@@ -7,6 +7,7 @@ import (
 	"lightIM/edge/tcpedge/internal/config"
 	"lightIM/edge/tcpedge/internal/imnet"
 	"lightIM/edge/tcpedge/internal/mq"
+	"lightIM/rpc/message/message"
 	"lightIM/rpc/online/online"
 )
 
@@ -15,15 +16,18 @@ type ServiceContext struct {
 	ConnPool     *imnet.ConnPool
 	OnlineRpc    online.Online
 	ChatProducer *mq.ImProducer
+	MessageRpc   message.Message
 }
 
 func NewServiceContext(c *config.Config) *ServiceContext {
 	writerMq := mq2.NewWriterSync(&c.Edge.KqWriter)
-	conn := zrpc.MustNewClient(c.OnlineRpc)
+	connOnline := zrpc.MustNewClient(c.OnlineRpc)
+	connMessage := zrpc.MustNewClient(c.MessageRpc)
 	return &ServiceContext{
 		C:            c,
 		ConnPool:     imnet.NewConnPool(context.TODO(), nil),
-		OnlineRpc:    online.NewOnline(conn),
+		OnlineRpc:    online.NewOnline(connOnline),
 		ChatProducer: mq.NewImProducer(writerMq),
+		MessageRpc:   message.NewMessage(connMessage),
 	}
 }

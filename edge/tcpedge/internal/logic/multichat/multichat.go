@@ -24,7 +24,7 @@ func NewMultiChatLogic(svcCtx *svc.ServiceContext) *MultiChatLogic {
 	}
 }
 
-func (l *MultiChatLogic) MultiChat(msg *types.MultiChatMsg, _ *imnet.ImConn) (*types.MultiChatMsgResp, error) {
+func (l *MultiChatLogic) MultiChat(msg *types.GroupChatMsg, _ *imnet.ImConn) (*types.GroupChatMsgResp, error) {
 	// 文本消息
 	if msg.Content.Type == params.Text {
 		text := msg.Content.Data.(*types.TextContent)
@@ -42,7 +42,7 @@ func (l *MultiChatLogic) MultiChat(msg *types.MultiChatMsg, _ *imnet.ImConn) (*t
 
 		if err := l.svcCtx.ChatProducer.Write(context.Background(), msgMq); err != nil {
 			l.Logger.Errorf("write to kafka error: %v", err)
-			return &types.MultiChatMsgResp{
+			return &types.GroupChatMsgResp{
 				RespBase: types.RespBase{
 					Code: codes.InternalServerError.Code,
 					Msg:  codes.InternalServerError.Msg,
@@ -50,12 +50,12 @@ func (l *MultiChatLogic) MultiChat(msg *types.MultiChatMsg, _ *imnet.ImConn) (*t
 			}, nil
 		}
 
-		return &types.MultiChatMsgResp{
+		return &types.GroupChatMsgResp{
 			RespBase: types.RespBase{
 				Code: codes.OK.Code,
 				Msg:  codes.OK.Msg,
 			},
 		}, nil
 	}
-	return &types.MultiChatMsgResp{}, nil
+	return &types.GroupChatMsgResp{}, nil
 }

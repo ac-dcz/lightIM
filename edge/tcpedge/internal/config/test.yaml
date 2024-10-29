@@ -1,15 +1,15 @@
 Edge:
   Host: 127.0.0.1:6000
-  Key: edge.tcp
+  Etcd:
+    Host:
+      - 127.0.0.1:2379
+    Key: edge.tcp
   EdgeId: 1001
   Kq:
     Brokers:
       - 127.0.0.1:9092
     Topic: edge.tcp.1001
-    GroupName: edge.tcp.1001.consumer
-Etcd:
-  Host:
-    - 127.0.0.1:2379
+    GroupName: edge.tcp.1001.mq
 Auth:
   AccessSecret: AFEFBCDDEFC
   AccessExpire: 3600

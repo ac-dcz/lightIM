@@ -55,24 +55,24 @@ func (m *SingleChatMsgResp) MsgType() uint32 {
 	return SingleChatMsgRespType
 }
 
-// MultiChatMsg 群聊
-type MultiChatMsg struct {
+// GroupChatMsg 群聊
+type GroupChatMsg struct {
 	Base
 	From    int64   `json:"from"`
 	Group   int64   `json:"group"`
 	Content Content `json:"content"`
 }
 
-func (m *MultiChatMsg) MsgType() uint32 {
-	return MultiChatMsgType
+func (m *GroupChatMsg) MsgType() uint32 {
+	return GroupChatMsgType
 }
 
-type MultiChatMsgResp struct {
+type GroupChatMsgResp struct {
 	RespBase
 }
 
-func (m *MultiChatMsgResp) MsgType() uint32 {
-	return MultiChatMsgRespType
+func (m *GroupChatMsgResp) MsgType() uint32 {
+	return GroupChatMsgRespType
 }
 
 type Content struct {
@@ -93,13 +93,33 @@ type OfflineNotify struct {
 	Uid int64
 }
 
+type AckMsg struct {
+	Base
+	From int64  `json:"from"`
+	Ack  string `json:"ack"` //已经收到MsgId = MongoID
+}
+
+func (m *AckMsg) MsgType() uint32 {
+	return AckMsgType
+}
+
+type AckMsgResp struct {
+	RespBase
+}
+
+func (a *AckMsgResp) MsgType() uint32 {
+	return AckMsgRespType
+}
+
 const (
 	AccessMsgType uint32 = iota
 	AccessMsgRespType
 	SingleChatMsgType
 	SingleChatMsgRespType
-	MultiChatMsgType
-	MultiChatMsgRespType
+	GroupChatMsgType
+	GroupChatMsgRespType
+	AckMsgType
+	AckMsgRespType
 )
 
 var defaultTypeMap = map[uint32]reflect.Type{
@@ -107,8 +127,10 @@ var defaultTypeMap = map[uint32]reflect.Type{
 	AccessMsgRespType:     reflect.TypeOf(AccessMsgResp{}),
 	SingleChatMsgType:     reflect.TypeOf(SingleChatMsg{}),
 	SingleChatMsgRespType: reflect.TypeOf(SingleChatMsgResp{}),
-	MultiChatMsgType:      reflect.TypeOf(MultiChatMsg{}),
-	MultiChatMsgRespType:  reflect.TypeOf(MultiChatMsgResp{}),
+	GroupChatMsgType:      reflect.TypeOf(GroupChatMsg{}),
+	GroupChatMsgRespType:  reflect.TypeOf(GroupChatMsgResp{}),
+	AckMsgType:            reflect.TypeOf(AckMsg{}),
+	AckMsgRespType:        reflect.TypeOf(AckMsgResp{}),
 }
 
 func init() {

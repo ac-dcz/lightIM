@@ -6,7 +6,9 @@ import (
 	"github.com/segmentio/kafka-go"
 	"github.com/zeromicro/go-zero/core/logx"
 	"lightIM/common/params"
+	"lightIM/edge/tcpedge/internal/logic/consumer"
 	"lightIM/edge/tcpedge/internal/svc"
+	"lightIM/rpc/message/mqtypes"
 )
 
 type pair struct {
@@ -58,9 +60,19 @@ func (h *consumerHandler) HandleMessage(msg *kafka.Message, callback func(msg *k
 }
 
 func (h *consumerHandler) handle(msg *kafka.Message) error {
-
+	m := &mqtypes.Message{}
+	if err := m.Decode(msg.Value); err != nil {
+		logx.Errorf("decode mq message error: %v", err)
+		return err
+	}
+	l := consumer.NewLogic(h.svcCtx)
+	if err := l.Exec(m); err != nil {
+		logx.Errorf("logic exec error: %v", err)
+		return err
+	}
 	return nil
 }
+
 func (h *consumerHandler) Close() error {
 	if h.workPool != nil {
 		h.workPool.Release()
