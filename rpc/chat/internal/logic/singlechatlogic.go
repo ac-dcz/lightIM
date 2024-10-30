@@ -83,6 +83,7 @@ func (l *SingleChatLogic) SingleChat(in *types.SingleChatReq) (*types.SingleChat
 								//Step4: 向对应的Mq发送消息
 								pLogic := NewProduceLogic(l.svcCtx)
 								if err := pLogic.Produce(l.ctx, rdConf, kafka.Message{
+									Key:   []byte(params.MqChatMessage),
 									Value: value,
 								}); err != nil {
 									l.Logger.Errorf("kafka produce message error: %v", err)

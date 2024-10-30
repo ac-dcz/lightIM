@@ -60,16 +60,23 @@ func (h *consumerHandler) HandleMessage(msg *kafka.Message, callback func(msg *k
 }
 
 func (h *consumerHandler) handle(msg *kafka.Message) error {
-	m := &mqtypes.Message{}
-	if err := m.Decode(msg.Value); err != nil {
-		logx.Errorf("decode mq message error: %v", err)
-		return err
+	switch string(msg.Key) {
+	case params.MqChatMessage:
+		m := &mqtypes.Message{}
+		if err := m.Decode(msg.Value); err != nil {
+			logx.Errorf("decode mq message error: %v", err)
+			return err
+		}
+		l := consumer.NewLogic(h.svcCtx)
+		if err := l.Exec(m); err != nil {
+			logx.Errorf("logic exec error: %v", err)
+			return err
+		}
+	case params.MqFriendReq:
+
+	case params.MqGroupReq:
 	}
-	l := consumer.NewLogic(h.svcCtx)
-	if err := l.Exec(m); err != nil {
-		logx.Errorf("logic exec error: %v", err)
-		return err
-	}
+
 	return nil
 }
 

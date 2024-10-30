@@ -17,3 +17,9 @@ const (
 	Read
 	Expired
 )
+
+const (
+	MqChatMessage string = "MqChatMessage"
+	MqFriendReq          = "MqFriendReq"
+	MqGroupReq           = "MqGroupReq"
+)

@@ -1,0 +1,78 @@
+syntax = "proto3";
+
+package relationship;
+
+option go_package = "./types";
+
+message Base{
+  int32 code = 1;
+  string msg = 2;
+}
+
+message AddFriendReq{
+  int64 from = 1;
+  string tel = 2;
+}
+
+message AddFriendResp{
+  Base base = 1;
+}
+
+message AddFriendAck{
+}
+
+message AddFriendAckResp{
+}
+
+message DelFriendReq{
+}
+
+message DelFriendResp{
+}
+
+message FriendListReq{
+}
+
+message FriendListResp{
+}
+
+message CreateGroupReq{
+}
+
+message  CreateGroupResp{
+}
+
+message JoinGroupReq{
+}
+
+message JoinGroupResp{
+}
+
+message  JoinGroupAck{
+}
+
+message  JoinGroupAckResp{
+}
+
+message LeaveGroupReq{
+}
+
+message LeaveGroupResp{
+}
+
+message GroupMemberListReq{
+}
+
+message  GroupMemberListResp{
+}
+
+service RelationShip{
+  rpc AddFriend(AddFriendReq) returns(AddFriendResp);
+  rpc FriendAck(AddFriendAck) returns(AddFriendAckResp);
+  rpc DelFriend(DelFriendReq) returns(DelFriendResp);
+  rpc FriendList(FriendListReq) returns(FriendListResp);
+  rpc JoinGroup(JoinGroupReq) returns(JoinGroupResp);
+  rpc GroupAck(JoinGroupAck) returns(JoinGroupAckResp);
+  rpc LeaveGroup(LeaveGroupReq) returns(LeaveGroupReq);
+  rpc GroupMemberList(GroupMemberListReq) returns(GroupMemberListResp);
+}
