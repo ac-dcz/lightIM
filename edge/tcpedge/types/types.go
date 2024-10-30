@@ -95,8 +95,8 @@ type OfflineNotify struct {
 
 type AckMsg struct {
 	Base
-	From int64  `json:"from"`
-	Ack  string `json:"ack"` //已经收到MsgId = MongoID
+	From int64    `json:"from"`
+	Ack  []string `json:"ack"` //已经收到MsgId = MongoID
 }
 
 func (m *AckMsg) MsgType() uint32 {

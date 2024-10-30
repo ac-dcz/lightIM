@@ -40,3 +40,7 @@ const (
 	RpcOnlineParamsInvalid = 60001 + iota
 	RpcOnlineNotFoundRoute
 )
+
+const (
+	RpcChatParseRoute = 70001 + iota
+)

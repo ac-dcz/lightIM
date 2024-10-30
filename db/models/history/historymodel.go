@@ -22,7 +22,7 @@ type (
 		CreateNew(ctx context.Context, id int64, isGroup bool) error
 		GetUnRead(ctx context.Context, uid int64) ([]message.Message, error)
 		AddUnRead(ctx context.Context, uid int64, msg *message.Message) error
-		RemoveUnRead(ctx context.Context, uid int64, msgId ...primitive.ObjectID) error
+		RemoveUnRead(ctx context.Context, uid int64, msgId ...string) error
 		AddHistory(ctx context.Context, uid, to int64, msgId ...primitive.ObjectID) error
 		GetHistories(ctx context.Context, uid, to int64) ([]Entry, error)
 		AddGroupHistory(ctx context.Context, gid, from int64, msgId ...primitive.ObjectID) error
@@ -79,9 +79,17 @@ func (c *customHistoryModel) AddUnRead(ctx context.Context, uid int64, msg *mess
 	return nil
 }
 
-func (c *customHistoryModel) RemoveUnRead(ctx context.Context, uid int64, msgId ...primitive.ObjectID) error {
+func (c *customHistoryModel) RemoveUnRead(ctx context.Context, uid int64, msgId ...string) error {
+	var objIds []primitive.ObjectID
+	for _, item := range msgId {
+		if id, err := primitive.ObjectIDFromHex(item); err != nil {
+			return err
+		} else {
+			objIds = append(objIds, id)
+		}
+	}
 	key := prefixHistoryUnReadCacheKey + strconv.FormatInt(uid, 10)
-	if _, err := c.conn.UpdateOne(ctx, key, bson.M{"uid": uid}, bson.M{"$pull": bson.M{"unRead": bson.M{"_id": bson.M{"$in": msgId}}}}); err != nil {
+	if _, err := c.conn.UpdateOne(ctx, key, bson.M{"uid": uid}, bson.M{"$pull": bson.M{"unRead": bson.M{"_id": bson.M{"$in": objIds}}}}); err != nil {
 		return err
 	}
 	return nil

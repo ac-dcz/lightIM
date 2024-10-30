@@ -77,7 +77,7 @@ message UpdateMsgStatusResp{
 
 message AckReq{
   int64 Uid = 1;
-  string MsgId = 2;
+  repeated string MsgId = 2;
 }
 
 message AckResp{

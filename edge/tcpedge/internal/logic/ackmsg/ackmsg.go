@@ -2,7 +2,6 @@ package ackmsg
 
 import (
 	"context"
-	"errors"
 	"github.com/zeromicro/go-zero/core/logx"
 	"lightIM/common/codes"
 	"lightIM/edge/tcpedge/internal/svc"
@@ -31,7 +30,12 @@ func (l *AckMsgLogic) AckMsg(ctx context.Context, msg *types.AckMsg) (*types.Ack
 		return nil, err
 	} else if resp.Base.Code != codes.OK.Code {
 		l.Logger.Errorf("ack msg error: %#v", resp.Base)
-		return nil, errors.New(resp.Base.Msg)
+		return &types.AckMsgResp{
+			RespBase: types.RespBase{
+				Code: resp.Base.Code,
+				Msg:  resp.Base.Msg,
+			},
+		}, nil
 	}
 	return &types.AckMsgResp{
 		RespBase: types.RespBase{

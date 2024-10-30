@@ -3,7 +3,6 @@ package logic
 import (
 	"context"
 	"encoding/json"
-	"errors"
 	"github.com/segmentio/kafka-go"
 	"lightIM/common/codes"
 	"lightIM/common/mq"
@@ -34,17 +33,29 @@ func NewSingleChatLogic(ctx context.Context, svcCtx *svc.ServiceContext) *Single
 }
 
 func (l *SingleChatLogic) SingleChat(in *types.SingleChatReq) (*types.SingleChatResp, error) {
-	// todo: add your logic here and delete this line
+	//Step1: 获取路由信息
 	if resp, err := l.svcCtx.OnlineRpc.GetRoute(l.ctx, &online.RouteReq{
 		UserId: in.To,
 	}); err != nil {
 		l.Logger.Errorf("Call online rpc fail: %v", err)
-		return nil, err
+		return &types.SingleChatResp{
+			Base: &types.Base{
+				Code: codes.RpcChatParseRoute,
+				Msg:  err.Error(),
+			},
+		}, nil
 	} else {
+		//Step2: 根据路由信息到ETCD上订阅Edge-MQ信息
 		if sub, err := sd.NewSubscriber(l.svcCtx.Config.EdgeEtcdHosts, resp.EdgeEtcdKey); err != nil {
 			l.Logger.Errorf("NewSubscriber fail: %v", err)
-			return nil, err
+			return &types.SingleChatResp{
+				Base: &types.Base{
+					Code: codes.RpcChatParseRoute,
+					Msg:  err.Error(),
+				},
+			}, nil
 		} else {
+			//Step3: 解析Mq信息
 			edgeId := strconv.FormatInt(resp.EdgeId, 10)
 			datas := sub.Values()
 			for _, data := range datas {
@@ -69,6 +80,7 @@ func (l *SingleChatLogic) SingleChat(in *types.SingleChatReq) (*types.SingleChat
 									l.Logger.Errorf("kafka msg encode error: %v", err)
 									return nil, err
 								}
+								//Step4: 向对应的Mq发送消息
 								pLogic := NewProduceLogic(l.svcCtx)
 								if err := pLogic.Produce(l.ctx, rdConf, kafka.Message{
 									Value: value,
@@ -86,7 +98,12 @@ func (l *SingleChatLogic) SingleChat(in *types.SingleChatReq) (*types.SingleChat
 						}
 					} else {
 						l.Logger.Errorf("kafka config not found")
-						return nil, errors.New("kafka config not found")
+						return &types.SingleChatResp{
+							Base: &types.Base{
+								Code: codes.RpcChatParseRoute,
+								Msg:  "kafka config not found",
+							},
+						}, nil
 					}
 					break
 				}
