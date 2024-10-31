@@ -44,3 +44,8 @@ const (
 const (
 	RpcChatParseRoute = 70001 + iota
 )
+
+const (
+	RpcRelationReqExists = 80001 + iota
+	RpcRelationParseRoute
+)

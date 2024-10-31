@@ -2,8 +2,10 @@ package logic
 
 import (
 	"context"
+	"encoding/json"
 	"lightIM/common/codes"
 	"lightIM/common/params"
+	"lightIM/common/sd"
 	"strconv"
 	"strings"
 
@@ -39,14 +41,35 @@ func (l *GetRouteLogic) GetRoute(in *types.RouteReq) (*types.RouteResp, error) {
 	}
 
 	if edgeId, etcdKey, ok := l.route(in.UserId); ok {
-		return &types.RouteResp{
-			Base: &types.Base{
-				Code: codes.OK.Code,
-				Msg:  codes.OK.Msg,
-			},
-			EdgeId:      edgeId,
-			EdgeEtcdKey: etcdKey,
-		}, nil
+		if sub, err := sd.NewSubscriber(l.svcCtx.Config.EdgeEtcdHost, etcdKey); err != nil {
+			l.Logger.Errorf("NewSubscriber fail: %v", err)
+			return &types.RouteResp{
+				Base: &types.Base{
+					Code: codes.InternalServerError.Code,
+					Msg:  err.Error(),
+				},
+			}, nil
+		} else {
+			metadata := sub.Values()
+			for _, data := range metadata {
+				if host, ok := data[params.EdgeTcpServer.EtcdEdgeHost].(string); ok {
+					if conf, ok := data[params.EdgeTcpServer.EtcdEdgeKq]; ok {
+						if byt, err := json.Marshal(conf); err == nil {
+							return &types.RouteResp{
+								Base: &types.Base{
+									Code: codes.OK.Code,
+									Msg:  codes.OK.Msg,
+								},
+								EdgeId:      edgeId,
+								EdgeEtcdKey: etcdKey,
+								EdgeHost:    host,
+								KqInfo:      byt,
+							}, nil
+						}
+					}
+				}
+			}
+		}
 	}
 
 	return &types.RouteResp{

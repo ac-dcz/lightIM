@@ -86,3 +86,17 @@ type rpcMessage struct {
 var RpcMessage = &rpcMessage{
 	MqWorkPoolSize: 10,
 }
+
+type rpcRelationship struct {
+	RdsFriendReqId        string
+	RdsFriendReqIdTimeout time.Duration
+}
+
+func (r *rpcRelationship) BizRdsReqIdKey(RdsReqId string) string {
+	return fmt.Sprintf("%s%s", r.RdsFriendReqId, RdsReqId)
+}
+
+var RpcRelationship = &rpcRelationship{
+	RdsFriendReqId:        "biz:rpc:relationship:friend:",
+	RdsFriendReqIdTimeout: time.Minute * 15,
+}

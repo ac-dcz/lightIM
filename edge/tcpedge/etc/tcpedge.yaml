@@ -4,7 +4,7 @@ Edge:
   Etcd:
     Host:
       - 127.0.0.1:2379
-    Key: edge.tcp
+    Key: edge.tcp.1001
   KqReader:
     Brokers:
       - 127.0.0.1:9092

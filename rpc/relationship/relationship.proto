@@ -11,29 +11,41 @@ message Base{
 
 message AddFriendReq{
   int64 from = 1;
-  string tel = 2;
+  int64 to = 2;
 }
 
 message AddFriendResp{
   Base base = 1;
+  string AddReqId = 2;//请求Id
 }
 
 message AddFriendAck{
+  string AddReqId = 1;
+  bool accept = 2;
 }
 
 message AddFriendAckResp{
+  Base base = 1;
+  bool successful = 2;
 }
 
 message DelFriendReq{
+  int64 from = 1;
+  int64 to = 2;
 }
 
 message DelFriendResp{
+  Base base = 1;
+  bool successful = 2;
 }
 
 message FriendListReq{
+  int64 from = 1;
 }
 
 message FriendListResp{
+  Base base = 1;
+  repeated int64 FriendList = 2;
 }
 
 message CreateGroupReq{

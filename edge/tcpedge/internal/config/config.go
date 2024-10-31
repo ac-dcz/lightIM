@@ -14,9 +14,9 @@ type EdgeTcpServerConf struct {
 		Host []string
 		Key  string //Etcd key
 	}
-	EdgeId   int64         //Edge id
-	KqReader mq.ReaderConf //kafka
-	KqWriter mq.WriterConf
+	EdgeId          int64         //Edge id
+	KqReader        mq.ReaderConf //kafka
+	KqMessageWriter mq.WriterConf
 }
 
 func (e *EdgeTcpServerConf) EtcdKey() string {

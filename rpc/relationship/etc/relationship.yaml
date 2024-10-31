@@ -1,6 +1,26 @@
 Name: relationship.rpc
-ListenOn: 0.0.0.0:8080
+ListenOn: 0.0.0.0:8084
 Etcd:
   Hosts:
   - 127.0.0.1:2379
   Key: relationship.rpc
+
+RelationShipDSN: root:dcz.2001018@tpc(127.0.0.1:3306)/lightIM?charset=utf8mb4&parseTime=True&loc=Local
+GroupDSN: root:dcz.2001018@tpc(127.0.0.1:3306)/lightIM?charset=utf8mb4&parseTime=True&loc=Local
+GroupMemberDSN: root:dcz.2001018@tpc(127.0.0.1:3306)/lightIM?charset=utf8mb4&parseTime=True&loc=Local
+
+CacheConf:
+  - Host: 127.0.0.1:6379
+    Pass:
+    Type: node
+
+BizRedisConf:
+  Host: 127.0.0.1:6379
+  Pass:
+  Type: node
+
+OnlineRpc:
+  Etcd:
+    Hosts:
+      - 127.0.0.1:2379
+    Key: online.rpc

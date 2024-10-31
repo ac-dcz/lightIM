@@ -20,7 +20,7 @@ type ServiceContext struct {
 }
 
 func NewServiceContext(c *config.Config) *ServiceContext {
-	writerMq := mq2.NewWriterSync(&c.Edge.KqWriter)
+	writerMq := mq2.NewWriterSync(&c.Edge.KqMessageWriter)
 	connOnline := zrpc.MustNewClient(c.OnlineRpc)
 	connMessage := zrpc.MustNewClient(c.MessageRpc)
 	return &ServiceContext{
