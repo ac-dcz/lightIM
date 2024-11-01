@@ -92,7 +92,7 @@ type rpcRelationship struct {
 	RdsFriendReqIdTimeout time.Duration
 }
 
-func (r *rpcRelationship) BizRdsReqIdKey(RdsReqId string) string {
+func (r *rpcRelationship) BizFriendReqKey(RdsReqId string) string {
 	return fmt.Sprintf("%s%s", r.RdsFriendReqId, RdsReqId)
 }
 

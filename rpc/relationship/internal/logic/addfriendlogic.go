@@ -31,10 +31,20 @@ func NewAddFriendLogic(ctx context.Context, svcCtx *svc.ServiceContext) *AddFrie
 	}
 }
 
+func GenFriendReqId(from, to int64) string {
+	return fmt.Sprintf("%d_%d", from, to)
+}
+
+func ParseFriendReqId(redId string) (int64, int64, error) {
+	var from, to int64 = 0, 0
+	_, err := fmt.Sscanf(redId, "%d_%d", &from, &to)
+	return from, to, err
+}
+
 func (l *AddFriendLogic) AddFriend(in *types.AddFriendReq) (*types.AddFriendResp, error) {
 	//Step1: generator reqID and Store in redis
-	reqId := fmt.Sprintf("%s_%s", in.From, in.To)
-	key := params.RpcRelationship.BizRdsReqIdKey(reqId)
+	reqId := GenFriendReqId(in.From, in.To)
+	key := params.RpcRelationship.BizFriendReqKey(reqId)
 	if l.exists(key) {
 		return &types.AddFriendResp{
 			Base: &types.Base{

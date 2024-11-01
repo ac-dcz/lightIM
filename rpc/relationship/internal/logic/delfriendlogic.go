@@ -2,6 +2,9 @@ package logic
 
 import (
 	"context"
+	"errors"
+	"lightIM/common/codes"
+	"lightIM/db/models/relationship"
 
 	"lightIM/rpc/relationship/internal/svc"
 	"lightIM/rpc/relationship/types"
@@ -24,7 +27,24 @@ func NewDelFriendLogic(ctx context.Context, svcCtx *svc.ServiceContext) *DelFrie
 }
 
 func (l *DelFriendLogic) DelFriend(in *types.DelFriendReq) (*types.DelFriendResp, error) {
-	// todo: add your logic here and delete this line
+	//Step: delete friend from database
+	if err := l.svcCtx.RelationShipModel.DelRelationShip(l.ctx, in.From, in.To); err != nil {
+		if errors.Is(err, relationship.ErrNotFound) {
+			return &types.DelFriendResp{
+				Base: &types.Base{
+					Code: codes.RpcRelationNotExists,
+					Msg:  "relationship not exists",
+				},
+			}, nil
+		}
+		logx.Errorf("DelFriendLogic error: %v", err)
+		return nil, err
+	}
 
-	return &types.DelFriendResp{}, nil
+	return &types.DelFriendResp{
+		Base: &types.Base{
+			Code: codes.OK.Code,
+			Msg:  codes.OK.Msg,
+		},
+	}, nil
 }

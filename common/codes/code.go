@@ -48,4 +48,6 @@ const (
 const (
 	RpcRelationReqExists = 80001 + iota
 	RpcRelationParseRoute
+	RpcRelationNotExists
+	RpcRelationReqExpired
 )
