@@ -97,6 +97,6 @@ func (r *rpcRelationship) BizFriendReqKey(RdsReqId string) string {
 }
 
 var RpcRelationship = &rpcRelationship{
-	RdsFriendReqId:        "biz:rpc:relationship:friend:",
+	RdsFriendReqId:        "biz:rpc:relationship:friend_req:",
 	RdsFriendReqIdTimeout: time.Minute * 15,
 }

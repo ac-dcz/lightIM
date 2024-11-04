@@ -10,6 +10,7 @@ import (
 	"lightIM/common/params"
 	"lightIM/rpc/online/online"
 	"lightIM/rpc/relationship/mqtypes"
+	"strings"
 
 	"lightIM/rpc/relationship/internal/svc"
 	"lightIM/rpc/relationship/types"
@@ -33,6 +34,10 @@ func NewAddFriendLogic(ctx context.Context, svcCtx *svc.ServiceContext) *AddFrie
 
 func GenFriendReqId(from, to int64) string {
 	return fmt.Sprintf("%d_%d", to, from)
+}
+
+func ReaderConfkey(readConf *mq.ReaderConf) string {
+	return fmt.Sprintf("%s#%s", strings.Join(readConf.Brokers, "-"), readConf.Topic)
 }
 
 func ParseFriendReqId(redId string) (int64, int64, error) {
@@ -95,13 +100,19 @@ func (l *AddFriendLogic) AddFriend(in *types.AddFriendReq) (*types.AddFriendResp
 				l.Logger.Errorf("mq message encoder error: %v", err)
 				return nil, err
 			} else {
-				if err := NewProduceLogic(l.svcCtx).Produce(l.ctx, rdConf, kafka.Message{
+
+				//Write to mq
+				if err := l.svcCtx.Producer.Produce(l.ctx, ReaderConfkey(rdConf), mq.WriterConf{
+					Brokers: rdConf.Brokers,
+					Topic:   rdConf.Topic,
+				}, kafka.Message{
 					Key:   []byte(params.MqFriendReq),
 					Value: value,
 				}); err != nil {
-					l.Logger.Errorf("kafka produce message error: %v", err)
+					l.Logger.Errorf("Produce error: %v", err)
 					return nil, err
 				}
+
 			}
 		} else {
 			return &types.AddFriendResp{
@@ -121,8 +132,8 @@ func (l *AddFriendLogic) AddFriend(in *types.AddFriendReq) (*types.AddFriendResp
 	}, nil
 }
 
-func (l *AddFriendLogic) exists(reqId string) bool {
-	ok, _ := l.svcCtx.BizRedis.ExistsCtx(l.ctx, reqId)
+func (l *AddFriendLogic) exists(key string) bool {
+	ok, _ := l.svcCtx.BizRedis.ExistsCtx(l.ctx, key)
 	return ok
 }
 

@@ -2,12 +2,10 @@ package logic
 
 import (
 	"context"
-	"fmt"
 	"github.com/segmentio/kafka-go"
 	"github.com/zeromicro/go-zero/core/logx"
 	"lightIM/common/mq"
 	"lightIM/rpc/relationship/internal/svc"
-	"strings"
 )
 
 type ProduceLogic struct {
@@ -22,12 +20,8 @@ func NewProduceLogic(svcCtx *svc.ServiceContext) *ProduceLogic {
 	}
 }
 
-func readerConfkey(readConf *mq.ReaderConf) string {
-	return fmt.Sprintf("%s#%s", strings.Join(readConf.Brokers, "-"), readConf.Topic)
-}
-
 func (l *ProduceLogic) Produce(ctx context.Context, rdConf *mq.ReaderConf, msg kafka.Message) error {
-	if err := l.svcCtx.Producer.Produce(ctx, readerConfkey(rdConf), mq.WriterConf{
+	if err := l.svcCtx.Producer.Produce(ctx, ReaderConfkey(rdConf), mq.WriterConf{
 		Brokers: rdConf.Brokers,
 		Topic:   rdConf.Topic,
 	}, msg); err != nil {
