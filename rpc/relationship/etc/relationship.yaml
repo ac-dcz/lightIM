@@ -24,3 +24,9 @@ OnlineRpc:
     Hosts:
       - 127.0.0.1:2379
     Key: online.rpc
+
+KqOnlineReader:
+  Brokers:
+    - 127.0.0.1:9092
+  Topic: online.rpc
+  GroupName: online.rpc.consumer.relationship

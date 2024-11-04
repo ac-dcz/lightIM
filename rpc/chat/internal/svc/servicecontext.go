@@ -2,8 +2,8 @@ package svc
 
 import (
 	"github.com/zeromicro/go-zero/zrpc"
+	"lightIM/common/mq"
 	"lightIM/rpc/chat/internal/config"
-	"lightIM/rpc/chat/internal/mq"
 	"lightIM/rpc/online/online"
 )
 

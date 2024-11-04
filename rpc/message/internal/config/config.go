@@ -20,6 +20,7 @@ type Config struct {
 		DB         string
 		Collection string
 	}
-	MsgReader mq.ReaderConf
-	ChatRpc   zrpc.RpcClientConf
+	MsgReader      mq.ReaderConf
+	ChatRpc        zrpc.RpcClientConf
+	KqOnlineReader mq.ReaderConf
 }

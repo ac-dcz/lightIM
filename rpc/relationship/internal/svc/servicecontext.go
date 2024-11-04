@@ -4,12 +4,12 @@ import (
 	"github.com/zeromicro/go-zero/core/stores/redis"
 	"github.com/zeromicro/go-zero/core/stores/sqlx"
 	"github.com/zeromicro/go-zero/zrpc"
+	"lightIM/common/mq"
 	"lightIM/db/models/group"
 	"lightIM/db/models/groupmember"
 	"lightIM/db/models/relationship"
 	"lightIM/rpc/online/online"
 	"lightIM/rpc/relationship/internal/config"
-	"lightIM/rpc/relationship/internal/mq"
 )
 
 type ServiceContext struct {

@@ -11,19 +11,19 @@ import (
 	"lightIM/rpc/message/mqtypes"
 )
 
-type ConsumeLogic struct {
+type MessageLogic struct {
 	svcCtx *svc.ServiceContext
 	logx.Logger
 }
 
-func NewConsumeLogic(svcCtx *svc.ServiceContext) *ConsumeLogic {
-	return &ConsumeLogic{
+func NewConsumeLogic(svcCtx *svc.ServiceContext) *MessageLogic {
+	return &MessageLogic{
 		svcCtx: svcCtx,
 		Logger: logx.WithContext(context.Background()),
 	}
 }
 
-func (l *ConsumeLogic) StoreMessage(ctx context.Context, msg *mqtypes.Message) error {
+func (l *MessageLogic) StoreMessage(ctx context.Context, msg *mqtypes.Message) error {
 	//Step1: store message
 	mongoMsg := &message.Message{
 		Type:         msg.Type,

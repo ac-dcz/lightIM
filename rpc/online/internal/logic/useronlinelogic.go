@@ -2,6 +2,8 @@ package logic
 
 import (
 	"context"
+	"fmt"
+	"github.com/segmentio/kafka-go"
 	"lightIM/common/codes"
 	"lightIM/common/params"
 
@@ -26,7 +28,6 @@ func NewUserOnlineLogic(ctx context.Context, svcCtx *svc.ServiceContext) *UserOn
 }
 
 func (l *UserOnlineLogic) UserOnline(in *types.UserOnlineReq) (*types.UserOnlineResp, error) {
-	// todo: add your logic here and delete this line
 	if in.EdgeEtcdKey == "" || in.EdgeId <= 0 || in.UserId <= 0 {
 		return &types.UserOnlineResp{
 			Base: &types.Base{
@@ -43,6 +44,12 @@ func (l *UserOnlineLogic) UserOnline(in *types.UserOnlineReq) (*types.UserOnline
 		l.Logger.Errorf("update edge info error: %v", err)
 		return nil, err
 	}
+
+	//notify other rpc server
+	_ = l.svcCtx.OnlineWriter.Write(l.ctx, kafka.Message{
+		Key:   []byte(params.MqOnlineNotify),
+		Value: []byte(fmt.Sprintf("%d", in.UserId)),
+	})
 
 	return &types.UserOnlineResp{
 		Base: &types.Base{

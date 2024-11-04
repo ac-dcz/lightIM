@@ -19,7 +19,8 @@ const (
 )
 
 const (
-	MqChatMessage string = "MqChatMessage"
-	MqFriendReq          = "MqFriendReq"
-	MqGroupReq           = "MqGroupReq"
+	MqChatMessage  string = "MqChatMessage"
+	MqFriendReq           = "MqFriendReq"
+	MqGroupReq            = "MqGroupReq"
+	MqOnlineNotify        = "MqOnlineNotify"
 )

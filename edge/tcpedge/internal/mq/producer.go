@@ -4,6 +4,7 @@ import (
 	"context"
 	"github.com/segmentio/kafka-go"
 	"lightIM/common/mq"
+	"lightIM/common/params"
 	"lightIM/rpc/message/mqtypes"
 )
 
@@ -22,6 +23,7 @@ func (p *ImProducer) Write(ctx context.Context, msg *mqtypes.Message) error {
 		return err
 	} else {
 		if err = p.writerMq.Write(ctx, kafka.Message{
+			Key:   []byte(params.MqChatMessage),
 			Value: data,
 		}); err != nil {
 			return err

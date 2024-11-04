@@ -32,12 +32,12 @@ func NewAddFriendLogic(ctx context.Context, svcCtx *svc.ServiceContext) *AddFrie
 }
 
 func GenFriendReqId(from, to int64) string {
-	return fmt.Sprintf("%d_%d", from, to)
+	return fmt.Sprintf("%d_%d", to, from)
 }
 
 func ParseFriendReqId(redId string) (int64, int64, error) {
 	var from, to int64 = 0, 0
-	_, err := fmt.Sscanf(redId, "%d_%d", &from, &to)
+	_, err := fmt.Sscanf(redId, "%d_%d", &to, &from)
 	return from, to, err
 }
 

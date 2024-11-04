@@ -7,9 +7,8 @@ import (
 	"github.com/zeromicro/go-zero/core/logx"
 	cmq "lightIM/common/mq"
 	"lightIM/common/params"
-	"lightIM/rpc/message/internal/logic/mq"
-	"lightIM/rpc/message/internal/svc"
-	"lightIM/rpc/message/mqtypes"
+	"lightIM/rpc/relationship/internal/logic/mq"
+	"lightIM/rpc/relationship/internal/svc"
 	"strconv"
 )
 
@@ -57,16 +56,6 @@ func (h *Handler) HandleMessage(msg *kafka.Message, callBack cmq.CallBackFunc) {
 
 func (h *Handler) handle(msg *kafka.Message) error {
 	switch string(msg.Key) {
-	case params.MqChatMessage:
-		m := &mqtypes.Message{}
-		if err := m.Decode(msg.Value); err != nil {
-			logx.Errorf("mq decode msg error: %v", err)
-			return err
-		}
-		l := mq.NewConsumeLogic(h.svcCtx)
-		if err := l.StoreMessage(context.Background(), m); err != nil {
-			return err
-		}
 	case params.MqOnlineNotify:
 		uid, err := strconv.ParseInt(string(msg.Value), 10, 64)
 		if err != nil {

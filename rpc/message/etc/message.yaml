@@ -27,10 +27,16 @@ MsgReader:
   Brokers:
     - 127.0.0.1:9092
   Topic: edge.tcp.chat
-  GroupName: edge.tcp.chat.mq
+  GroupName: edge.tcp.chat.consumer.message
 
 ChatRpc:
   Etcd:
     Hosts:
       - 127.0.0.1:2379
     Key: chat.rpc
+
+KqOnlineReader:
+  Brokers:
+    - 127.0.0.1:9092
+  Topic: online.rpc
+  GroupName: online.rpc.consumer.message

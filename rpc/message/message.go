@@ -3,8 +3,8 @@ package main
 import (
 	"flag"
 	"fmt"
-
 	"lightIM/rpc/message/internal/config"
+	"lightIM/rpc/message/internal/mq"
 	"lightIM/rpc/message/internal/server"
 	"lightIM/rpc/message/internal/svc"
 	"lightIM/rpc/message/types"
@@ -24,6 +24,12 @@ func main() {
 	var c config.Config
 	conf.MustLoad(*configFile, &c)
 	ctx := svc.NewServiceContext(c)
+
+	if consumer, err := mq.NewConsumer(ctx, nil); err != nil {
+		panic(err)
+	} else {
+		go consumer.Start()
+	}
 
 	s := zrpc.MustNewServer(c.RpcServerConf, func(grpcServer *grpc.Server) {
 		types.RegisterMessageServer(grpcServer, server.NewMessageServer(ctx))
