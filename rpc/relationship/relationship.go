@@ -3,6 +3,7 @@ package main
 import (
 	"flag"
 	"fmt"
+	"lightIM/rpc/relationship/internal/mq"
 
 	"lightIM/rpc/relationship/internal/config"
 	"lightIM/rpc/relationship/internal/server"
@@ -24,6 +25,12 @@ func main() {
 	var c config.Config
 	conf.MustLoad(*configFile, &c)
 	ctx := svc.NewServiceContext(c)
+
+	if consumer, err := mq.NewConsumer(ctx, nil); err != nil {
+		panic(err)
+	} else {
+		go consumer.Start()
+	}
 
 	s := zrpc.MustNewServer(c.RpcServerConf, func(grpcServer *grpc.Server) {
 		types.RegisterRelationShipServer(grpcServer, server.NewRelationShipServer(ctx))
