@@ -5,6 +5,7 @@ import (
 	"net/http"
 
 	login "lightIM/api/internal/handler/login"
+	message "lightIM/api/internal/handler/message"
 	relationship "lightIM/api/internal/handler/relationship"
 	"lightIM/api/internal/svc"
 
@@ -39,6 +40,25 @@ func RegisterHandlers(server *rest.Server, serverCtx *svc.ServiceContext) {
 	server.AddRoutes(
 		[]rest.Route{
 			{
+				// 获取历史记录
+				Method:  http.MethodGet,
+				Path:    "/history/get",
+				Handler: message.GetHistoryHandler(serverCtx),
+			},
+			{
+				// 获取群历史记录
+				Method:  http.MethodGet,
+				Path:    "/history/group/get",
+				Handler: message.GetHistoryGroupHandler(serverCtx),
+			},
+		},
+		rest.WithJwt(serverCtx.Config.Auth.AccessSecret),
+		rest.WithPrefix("/api/v1/message"),
+	)
+
+	server.AddRoutes(
+		[]rest.Route{
+			{
 				// 好友请求
 				Method:  http.MethodPost,
 				Path:    "/friend/add",
@@ -57,6 +77,7 @@ func RegisterHandlers(server *rest.Server, serverCtx *svc.ServiceContext) {
 				Handler: relationship.GetFriendListHandler(serverCtx),
 			},
 		},
+		rest.WithJwt(serverCtx.Config.Auth.AccessSecret),
 		rest.WithPrefix("/api/v1/relationship"),
 	)
 }

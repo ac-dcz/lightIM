@@ -33,6 +33,28 @@ type FriendListResp struct {
 	Friends []UserInfo `json:"friends"`
 }
 
+type HistoryGroupReq struct {
+	GroupId int64 `json:"group_id"`
+}
+
+type HistoryGroupResp struct {
+	Base
+	MessageList []Message `json:"messageList"`
+}
+
+type HistoryReq struct {
+	Uid1 int64 `json:"uid_1"`
+	Uid2 int64 `json:"uid_2"`
+}
+
+type HistoryResp struct {
+	Base
+	MessageList []Message `json:"messageList"`
+}
+
+type Message struct {
+}
+
 type SignInReq struct {
 	Tel string `json:"tel"`
 	Pwd string `json:"pwd"`

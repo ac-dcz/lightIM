@@ -82,7 +82,7 @@ type (
 )
 
 @server (
-	auth:   jwt
+	jwt:    Auth
 	group:  relationship
 	prefix: /api/v1/relationship
 )
@@ -98,5 +98,41 @@ service applet-api {
 	@doc "请求好友列表"
 	@handler GetFriendList
 	get /friend/list (FriendListReq) returns (FriendListResp)
+}
+
+type Message {}
+
+//message api
+type (
+	HistoryReq {
+		Uid1 int64 `json:"uid_1"`
+		Uid2 int64 `json:"uid_2"`
+	}
+	HistoryResp {
+		Base
+		MessageList []Message `json:"messageList"`
+	}
+	HistoryGroupReq {
+		GroupId int64 `json:"group_id"`
+	}
+	HistoryGroupResp {
+		Base
+		MessageList []Message `json:"messageList"`
+	}
+)
+
+@server (
+	jwt:    Auth
+	prefix: /api/v1/message
+	group:  message
+)
+service applet-api {
+	@doc "获取历史记录"
+	@handler GetHistory
+	get /history/get (HistoryReq) returns (HistoryResp)
+
+	@doc "获取群历史记录"
+	@handler GetHistoryGroup
+	get /history/group/get (HistoryGroupReq) returns (HistoryGroupResp)
 }
 
