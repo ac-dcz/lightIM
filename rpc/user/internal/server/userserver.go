@@ -31,3 +31,8 @@ func (s *UserServer) SignUp(ctx context.Context, in *types.SignUpReq) (*types.Si
 	l := logic.NewSignUpLogic(ctx, s.svcCtx)
 	return l.SignUp(in)
 }
+
+func (s *UserServer) GetUserInfo(ctx context.Context, in *types.UserInfoReq) (*types.UserInfoResp, error) {
+	l := logic.NewGetUserInfoLogic(ctx, s.svcCtx)
+	return l.GetUserInfo(in)
+}

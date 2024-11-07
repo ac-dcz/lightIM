@@ -50,3 +50,53 @@ service applet-api {
 	post /signup (SignUpReq) returns (SignUpResp)
 }
 
+type UserInfo {
+	Uid      int64  `json:"uid"`
+	Tel      string `json:"tel"`
+	NickName string `json:"nick_name"`
+}
+
+//relationship api
+type (
+	AddFriendReq {
+		From int64 `json:"from"`
+		To   int64 `json:"to"`
+	}
+	AddFriendResp {
+		Base
+	}
+	DelFriendReq {
+		From int64 `json:"from"`
+		To   int64 `json:"to"`
+	}
+	DelFriendResp {
+		Base
+	}
+	FriendListReq {
+		From int64 `json:"from"`
+	}
+	FriendListResp {
+		Base
+		Friends []UserInfo `json:"friends"`
+	}
+)
+
+@server (
+	auth:   jwt
+	group:  relationship
+	prefix: /api/v1/relationship
+)
+service applet-api {
+	@doc "好友请求"
+	@handler AddFriend
+	post /friend/add (AddFriendReq) returns (AddFriendResp)
+
+	@doc "删除好友"
+	@handler DelFriend
+	post /friend/del (DelFriendReq) returns (DelFriendResp)
+
+	@doc "请求好友列表"
+	@handler GetFriendList
+	get /friend/list (FriendListReq) returns (FriendListResp)
+}
+

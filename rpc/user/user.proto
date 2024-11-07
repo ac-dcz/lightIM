@@ -1,5 +1,6 @@
 syntax = "proto3";
 
+package types;
 
 option go_package = "./types";
 
@@ -29,7 +30,23 @@ message SignUpResp{
   int64 uid = 4;
 }
 
+message UserInfo{
+  int64 uid = 1;
+  string tel = 2;
+  string nickName = 3;
+}
+
+message UserInfoReq{
+    repeated int64 uidList = 1;
+}
+
+message UserInfoResp{
+  Base base = 1;
+  repeated UserInfo infoList = 2;
+}
+
 service User{
   rpc SignIn(SignInReq) returns(SignInResp);
   rpc SignUp(SignUpReq) returns(SignUpResp);
+  rpc GetUserInfo(UserInfoReq) returns(UserInfoResp);
 }

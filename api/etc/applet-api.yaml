@@ -19,6 +19,12 @@ MessageRpc:
       - 127.0.0.1:2379
     Key: message.rpc
 
+RelationshipRpc:
+  Etcd:
+    Hosts:
+      - 127.0.0.1:2379
+    Key: relationship.rpc
+
 Auth:
   AccessSecret: AFEFBCDDEFC
   AccessExpire: 3600

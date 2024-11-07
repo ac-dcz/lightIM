@@ -5,14 +5,16 @@ import (
 	"github.com/zeromicro/go-zero/zrpc"
 	"lightIM/api/internal/config"
 	"lightIM/rpc/message/message"
+	"lightIM/rpc/relationship/relationship"
 	userclient "lightIM/rpc/user/user"
 )
 
 type ServiceContext struct {
-	Config     config.Config
-	BizRds     *redis.Redis
-	UserRpc    userclient.User
-	MessageRpc message.Message
+	Config          config.Config
+	BizRds          *redis.Redis
+	UserRpc         userclient.User
+	MessageRpc      message.Message
+	RelationshipRpc relationship.RelationShip
 }
 
 func NewServiceContext(c config.Config) *ServiceContext {

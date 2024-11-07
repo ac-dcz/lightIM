@@ -5,6 +5,7 @@ import (
 	"net/http"
 
 	login "lightIM/api/internal/handler/login"
+	relationship "lightIM/api/internal/handler/relationship"
 	"lightIM/api/internal/svc"
 
 	"github.com/zeromicro/go-zero/rest"
@@ -33,5 +34,29 @@ func RegisterHandlers(server *rest.Server, serverCtx *svc.ServiceContext) {
 			},
 		},
 		rest.WithPrefix("/api/v1/login"),
+	)
+
+	server.AddRoutes(
+		[]rest.Route{
+			{
+				// 好友请求
+				Method:  http.MethodPost,
+				Path:    "/friend/add",
+				Handler: relationship.AddFriendHandler(serverCtx),
+			},
+			{
+				// 删除好友
+				Method:  http.MethodPost,
+				Path:    "/friend/del",
+				Handler: relationship.DelFriendHandler(serverCtx),
+			},
+			{
+				// 请求好友列表
+				Method:  http.MethodGet,
+				Path:    "/friend/list",
+				Handler: relationship.GetFriendListHandler(serverCtx),
+			},
+		},
+		rest.WithPrefix("/api/v1/relationship"),
 	)
 }

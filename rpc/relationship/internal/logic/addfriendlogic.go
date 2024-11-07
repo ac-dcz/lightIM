@@ -69,7 +69,6 @@ func (l *AddFriendLogic) AddFriend(in *types.AddFriendReq) (*types.AddFriendResp
 		}
 	}
 	//Step2: get route and write to mq
-
 	if resp, err := l.svcCtx.OnlineRpc.GetRoute(l.ctx, &online.RouteReq{
 		UserId: in.To,
 	}); err != nil {

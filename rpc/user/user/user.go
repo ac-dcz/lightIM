@@ -13,15 +13,19 @@ import (
 )
 
 type (
-	Base       = types.Base
-	SignInReq  = types.SignInReq
-	SignInResp = types.SignInResp
-	SignUpReq  = types.SignUpReq
-	SignUpResp = types.SignUpResp
+	Base         = types.Base
+	SignInReq    = types.SignInReq
+	SignInResp   = types.SignInResp
+	SignUpReq    = types.SignUpReq
+	SignUpResp   = types.SignUpResp
+	UserInfo     = types.UserInfo
+	UserInfoReq  = types.UserInfoReq
+	UserInfoResp = types.UserInfoResp
 
 	User interface {
 		SignIn(ctx context.Context, in *SignInReq, opts ...grpc.CallOption) (*SignInResp, error)
 		SignUp(ctx context.Context, in *SignUpReq, opts ...grpc.CallOption) (*SignUpResp, error)
+		GetUserInfo(ctx context.Context, in *UserInfoReq, opts ...grpc.CallOption) (*UserInfoResp, error)
 	}
 
 	defaultUser struct {
@@ -43,4 +47,9 @@ func (m *defaultUser) SignIn(ctx context.Context, in *SignInReq, opts ...grpc.Ca
 func (m *defaultUser) SignUp(ctx context.Context, in *SignUpReq, opts ...grpc.CallOption) (*SignUpResp, error) {
 	client := types.NewUserClient(m.cli.Conn())
 	return client.SignUp(ctx, in, opts...)
+}
+
+func (m *defaultUser) GetUserInfo(ctx context.Context, in *UserInfoReq, opts ...grpc.CallOption) (*UserInfoResp, error) {
+	client := types.NewUserClient(m.cli.Conn())
+	return client.GetUserInfo(ctx, in, opts...)
 }

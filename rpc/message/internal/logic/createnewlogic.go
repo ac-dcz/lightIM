@@ -24,6 +24,7 @@ func NewCreateNewLogic(ctx context.Context, svcCtx *svc.ServiceContext) *CreateN
 	}
 }
 
+// CreateNew 当有新用户注册时，为其创建一个新的消息项
 func (l *CreateNewLogic) CreateNew(in *types.CreateNewReq) (*types.CreateNewResp, error) {
 	if err := l.svcCtx.HistoryModel.CreateNew(l.ctx, in.Id, in.IsGroup); err != nil {
 		l.Logger.Errorf("CreateNew err:%v", err)

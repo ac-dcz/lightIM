@@ -69,7 +69,7 @@ func (l *SignUpLogic) SignUp(req *types.SignUpReq) (resp *types.SignUpResp, err 
 			},
 		}, nil
 	} else {
-		//don`t care
+		//don`t care => to create a new history item
 		_, _ = l.svcCtx.MessageRpc.CreateNew(l.ctx, &message.CreateNewReq{
 			Id:      resp.Uid,
 			IsGroup: false,
