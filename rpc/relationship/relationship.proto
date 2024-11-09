@@ -49,33 +49,52 @@ message FriendListResp{
 }
 
 message CreateGroupReq{
+  int64 From = 1;
+  string GroupName = 2;
+  string GroupDesc = 3;
 }
 
 message  CreateGroupResp{
+  Base base = 1;
+  int64 gid = 2;
+  bytes groupNum = 3;
 }
 
 message JoinGroupReq{
+  int64 From = 1;
+  bytes groupNum = 2;
 }
 
 message JoinGroupResp{
+  Base base = 1;
+  string JoinReqId = 2;
 }
 
 message  JoinGroupAck{
+  string JoinReqId = 1;
+  bool Accept = 2;
 }
 
 message  JoinGroupAckResp{
+  Base base = 1;
 }
 
 message LeaveGroupReq{
+  int64 From = 1;
+  int64 GId = 2;
 }
 
 message LeaveGroupResp{
+  Base base = 1;
 }
 
 message GroupMemberListReq{
+  int64 GroupId = 1;
 }
 
 message  GroupMemberListResp{
+  Base base = 1;
+  repeated int64  UidList = 2;
 }
 
 service RelationShip{
@@ -83,6 +102,7 @@ service RelationShip{
   rpc FriendAck(AddFriendAck) returns(AddFriendAckResp);
   rpc DelFriend(DelFriendReq) returns(DelFriendResp);
   rpc FriendList(FriendListReq) returns(FriendListResp);
+  rpc CreateGroup(CreateGroupReq) returns(CreateGroupResp);
   rpc JoinGroup(JoinGroupReq) returns(JoinGroupResp);
   rpc GroupAck(JoinGroupAck) returns(JoinGroupAckResp);
   rpc LeaveGroup(LeaveGroupReq) returns(LeaveGroupReq);

@@ -38,6 +38,7 @@ type (
 		FriendAck(ctx context.Context, in *AddFriendAck, opts ...grpc.CallOption) (*AddFriendAckResp, error)
 		DelFriend(ctx context.Context, in *DelFriendReq, opts ...grpc.CallOption) (*DelFriendResp, error)
 		FriendList(ctx context.Context, in *FriendListReq, opts ...grpc.CallOption) (*FriendListResp, error)
+		CreateGroup(ctx context.Context, in *CreateGroupReq, opts ...grpc.CallOption) (*CreateGroupResp, error)
 		JoinGroup(ctx context.Context, in *JoinGroupReq, opts ...grpc.CallOption) (*JoinGroupResp, error)
 		GroupAck(ctx context.Context, in *JoinGroupAck, opts ...grpc.CallOption) (*JoinGroupAckResp, error)
 		LeaveGroup(ctx context.Context, in *LeaveGroupReq, opts ...grpc.CallOption) (*LeaveGroupReq, error)
@@ -73,6 +74,11 @@ func (m *defaultRelationShip) DelFriend(ctx context.Context, in *DelFriendReq, o
 func (m *defaultRelationShip) FriendList(ctx context.Context, in *FriendListReq, opts ...grpc.CallOption) (*FriendListResp, error) {
 	client := types.NewRelationShipClient(m.cli.Conn())
 	return client.FriendList(ctx, in, opts...)
+}
+
+func (m *defaultRelationShip) CreateGroup(ctx context.Context, in *CreateGroupReq, opts ...grpc.CallOption) (*CreateGroupResp, error) {
+	client := types.NewRelationShipClient(m.cli.Conn())
+	return client.CreateGroup(ctx, in, opts...)
 }
 
 func (m *defaultRelationShip) JoinGroup(ctx context.Context, in *JoinGroupReq, opts ...grpc.CallOption) (*JoinGroupResp, error) {

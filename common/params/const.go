@@ -24,3 +24,9 @@ const (
 	MqGroupReq            = "MqGroupReq"
 	MqOnlineNotify        = "MqOnlineNotify"
 )
+
+const (
+	GroupOwnerType = iota
+	GroupAdminType
+	GroupMemberType
+)

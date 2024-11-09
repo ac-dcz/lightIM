@@ -42,6 +42,11 @@ func (s *RelationShipServer) FriendList(ctx context.Context, in *types.FriendLis
 	return l.FriendList(in)
 }
 
+func (s *RelationShipServer) CreateGroup(ctx context.Context, in *types.CreateGroupReq) (*types.CreateGroupResp, error) {
+	l := logic.NewCreateGroupLogic(ctx, s.svcCtx)
+	return l.CreateGroup(in)
+}
+
 func (s *RelationShipServer) JoinGroup(ctx context.Context, in *types.JoinGroupReq) (*types.JoinGroupResp, error) {
 	l := logic.NewJoinGroupLogic(ctx, s.svcCtx)
 	return l.JoinGroup(in)

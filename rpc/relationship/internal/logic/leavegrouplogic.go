@@ -24,7 +24,10 @@ func NewLeaveGroupLogic(ctx context.Context, svcCtx *svc.ServiceContext) *LeaveG
 }
 
 func (l *LeaveGroupLogic) LeaveGroup(in *types.LeaveGroupReq) (*types.LeaveGroupReq, error) {
-	// todo: add your logic here and delete this line
+	if err := l.svcCtx.GroupMemberModel.Delete(l.ctx, in.GId, in.From); err != nil {
+		l.Logger.Errorf("")
+		return nil, err
+	}
 
 	return &types.LeaveGroupReq{}, nil
 }

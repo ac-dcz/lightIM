@@ -90,13 +90,21 @@ var RpcMessage = &rpcMessage{
 type rpcRelationship struct {
 	RdsFriendReqId        string
 	RdsFriendReqIdTimeout time.Duration
+	GroupNumberLen        int
+	RdsGroupReqId         string
+	RdsGroupReqIdTimeout  time.Duration
 }
 
 func (r *rpcRelationship) BizFriendReqKey(RdsReqId string) string {
-	return fmt.Sprintf("%s%s", r.RdsFriendReqId, RdsReqId)
+	return fmt.Sprintf("%s:%s", r.RdsFriendReqId, RdsReqId)
+}
+
+func (r *rpcRelationship) BizGroupReqIdKey(RdsReqId string) string {
+	return fmt.Sprintf("%s:%s", r.RdsGroupReqId, RdsReqId)
 }
 
 var RpcRelationship = &rpcRelationship{
 	RdsFriendReqId:        "biz:rpc:relationship:friend_req:",
 	RdsFriendReqIdTimeout: time.Minute * 15,
+	GroupNumberLen:        11,
 }

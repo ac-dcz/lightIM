@@ -2,6 +2,7 @@ package logic
 
 import (
 	"context"
+	"lightIM/common/codes"
 
 	"lightIM/rpc/relationship/internal/svc"
 	"lightIM/rpc/relationship/types"
@@ -24,7 +25,20 @@ func NewGroupMemberListLogic(ctx context.Context, svcCtx *svc.ServiceContext) *G
 }
 
 func (l *GroupMemberListLogic) GroupMemberList(in *types.GroupMemberListReq) (*types.GroupMemberListResp, error) {
-	// todo: add your logic here and delete this line
-
-	return &types.GroupMemberListResp{}, nil
+	members, err := l.svcCtx.GroupMemberModel.FindMembersByGid(l.ctx, in.GroupId)
+	if err != nil {
+		l.Logger.Errorf("GroupMemberListLogic FindMembersByGid err: %v", err)
+		return nil, err
+	}
+	var uidList []int64
+	for _, member := range members {
+		uidList = append(uidList, member.Member)
+	}
+	return &types.GroupMemberListResp{
+		Base: &types.Base{
+			Code: codes.OK.Code,
+			Msg:  codes.OK.Msg,
+		},
+		UidList: uidList,
+	}, nil
 }

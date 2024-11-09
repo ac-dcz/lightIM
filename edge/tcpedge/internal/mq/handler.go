@@ -8,7 +8,8 @@ import (
 	"lightIM/common/params"
 	"lightIM/edge/tcpedge/internal/logic/consumer"
 	"lightIM/edge/tcpedge/internal/svc"
-	"lightIM/rpc/message/mqtypes"
+	msg_mq "lightIM/rpc/message/mqtypes"
+	msg_req "lightIM/rpc/relationship/mqtypes"
 )
 
 type pair struct {
@@ -62,7 +63,7 @@ func (h *consumerHandler) HandleMessage(msg *kafka.Message, callback func(msg *k
 func (h *consumerHandler) handle(msg *kafka.Message) error {
 	switch string(msg.Key) {
 	case params.MqChatMessage:
-		m := &mqtypes.Message{}
+		m := &msg_mq.Message{}
 		if err := m.Decode(msg.Value); err != nil {
 			logx.Errorf("decode mq message error: %v", err)
 			return err
@@ -73,8 +74,27 @@ func (h *consumerHandler) handle(msg *kafka.Message) error {
 			return err
 		}
 	case params.MqFriendReq:
-
+		m := &msg_req.AddFriendRequest{}
+		if err := m.Decode(msg.Value); err != nil {
+			logx.Errorf("decode mq addfriend error: %v", err)
+			return err
+		}
+		l := consumer.NewRequestLogic(h.svcCtx)
+		if err := l.ExecFriendReq(m); err != nil {
+			logx.Errorf("logic exec error: %v", err)
+			return err
+		}
 	case params.MqGroupReq:
+		m := &msg_req.JoinGroupRequest{}
+		if err := m.Decode(msg.Value); err != nil {
+			logx.Errorf("decode mq joingroup error: %v", err)
+			return err
+		}
+		l := consumer.NewRequestLogic(h.svcCtx)
+		if err := l.ExecGroupReq(m); err != nil {
+			logx.Errorf("logic exec error: %v", err)
+			return err
+		}
 	}
 
 	return nil

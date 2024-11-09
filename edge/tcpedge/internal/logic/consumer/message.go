@@ -9,19 +9,19 @@ import (
 	"lightIM/rpc/message/mqtypes"
 )
 
-type Logic struct {
+type MessageLogic struct {
 	svcCtx *svc.ServiceContext
 	logx.Logger
 }
 
-func NewLogic(svcCtx *svc.ServiceContext) *Logic {
-	return &Logic{
+func NewLogic(svcCtx *svc.ServiceContext) *MessageLogic {
+	return &MessageLogic{
 		svcCtx: svcCtx,
 		Logger: logx.WithContext(context.Background()),
 	}
 }
 
-func (l *Logic) Exec(msg *mqtypes.Message) error {
+func (l *MessageLogic) Exec(msg *mqtypes.Message) error {
 	switch msg.Type {
 	case params.Text:
 		return l.execTextMsg(msg)
@@ -31,7 +31,7 @@ func (l *Logic) Exec(msg *mqtypes.Message) error {
 	return nil
 }
 
-func (l *Logic) execTextMsg(msg *mqtypes.Message) error {
+func (l *MessageLogic) execTextMsg(msg *mqtypes.Message) error {
 	if conn, ok := l.svcCtx.ConnPool.GetAuthConnByUid(msg.To); ok {
 		if msg.IsGroup {
 			m := &types.GroupChatMsg{
@@ -78,12 +78,12 @@ func (l *Logic) execTextMsg(msg *mqtypes.Message) error {
 	return nil
 }
 
-func (l *Logic) execBigFileMsg(msg *mqtypes.Message) error {
+func (l *MessageLogic) execBigFileMsg(msg *mqtypes.Message) error {
 
 	return nil
 }
 
-func (l *Logic) execNormalFileMsg(msg *mqtypes.Message) error {
+func (l *MessageLogic) execNormalFileMsg(msg *mqtypes.Message) error {
 
 	return nil
 }

@@ -23,6 +23,7 @@ const (
 	RelationShip_FriendAck_FullMethodName       = "/relationship.RelationShip/FriendAck"
 	RelationShip_DelFriend_FullMethodName       = "/relationship.RelationShip/DelFriend"
 	RelationShip_FriendList_FullMethodName      = "/relationship.RelationShip/FriendList"
+	RelationShip_CreateGroup_FullMethodName     = "/relationship.RelationShip/CreateGroup"
 	RelationShip_JoinGroup_FullMethodName       = "/relationship.RelationShip/JoinGroup"
 	RelationShip_GroupAck_FullMethodName        = "/relationship.RelationShip/GroupAck"
 	RelationShip_LeaveGroup_FullMethodName      = "/relationship.RelationShip/LeaveGroup"
@@ -37,6 +38,7 @@ type RelationShipClient interface {
 	FriendAck(ctx context.Context, in *AddFriendAck, opts ...grpc.CallOption) (*AddFriendAckResp, error)
 	DelFriend(ctx context.Context, in *DelFriendReq, opts ...grpc.CallOption) (*DelFriendResp, error)
 	FriendList(ctx context.Context, in *FriendListReq, opts ...grpc.CallOption) (*FriendListResp, error)
+	CreateGroup(ctx context.Context, in *CreateGroupReq, opts ...grpc.CallOption) (*CreateGroupResp, error)
 	JoinGroup(ctx context.Context, in *JoinGroupReq, opts ...grpc.CallOption) (*JoinGroupResp, error)
 	GroupAck(ctx context.Context, in *JoinGroupAck, opts ...grpc.CallOption) (*JoinGroupAckResp, error)
 	LeaveGroup(ctx context.Context, in *LeaveGroupReq, opts ...grpc.CallOption) (*LeaveGroupReq, error)
@@ -87,6 +89,15 @@ func (c *relationShipClient) FriendList(ctx context.Context, in *FriendListReq, 
 	return out, nil
 }
 
+func (c *relationShipClient) CreateGroup(ctx context.Context, in *CreateGroupReq, opts ...grpc.CallOption) (*CreateGroupResp, error) {
+	out := new(CreateGroupResp)
+	err := c.cc.Invoke(ctx, RelationShip_CreateGroup_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 func (c *relationShipClient) JoinGroup(ctx context.Context, in *JoinGroupReq, opts ...grpc.CallOption) (*JoinGroupResp, error) {
 	out := new(JoinGroupResp)
 	err := c.cc.Invoke(ctx, RelationShip_JoinGroup_FullMethodName, in, out, opts...)
@@ -131,6 +142,7 @@ type RelationShipServer interface {
 	FriendAck(context.Context, *AddFriendAck) (*AddFriendAckResp, error)
 	DelFriend(context.Context, *DelFriendReq) (*DelFriendResp, error)
 	FriendList(context.Context, *FriendListReq) (*FriendListResp, error)
+	CreateGroup(context.Context, *CreateGroupReq) (*CreateGroupResp, error)
 	JoinGroup(context.Context, *JoinGroupReq) (*JoinGroupResp, error)
 	GroupAck(context.Context, *JoinGroupAck) (*JoinGroupAckResp, error)
 	LeaveGroup(context.Context, *LeaveGroupReq) (*LeaveGroupReq, error)
@@ -153,6 +165,9 @@ func (UnimplementedRelationShipServer) DelFriend(context.Context, *DelFriendReq)
 }
 func (UnimplementedRelationShipServer) FriendList(context.Context, *FriendListReq) (*FriendListResp, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method FriendList not implemented")
+}
+func (UnimplementedRelationShipServer) CreateGroup(context.Context, *CreateGroupReq) (*CreateGroupResp, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method CreateGroup not implemented")
 }
 func (UnimplementedRelationShipServer) JoinGroup(context.Context, *JoinGroupReq) (*JoinGroupResp, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method JoinGroup not implemented")
@@ -251,6 +266,24 @@ func _RelationShip_FriendList_Handler(srv interface{}, ctx context.Context, dec 
 	return interceptor(ctx, in, info, handler)
 }
 
+func _RelationShip_CreateGroup_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(CreateGroupReq)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(RelationShipServer).CreateGroup(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: RelationShip_CreateGroup_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(RelationShipServer).CreateGroup(ctx, req.(*CreateGroupReq))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 func _RelationShip_JoinGroup_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(JoinGroupReq)
 	if err := dec(in); err != nil {
@@ -345,6 +378,10 @@ var RelationShip_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "FriendList",
 			Handler:    _RelationShip_FriendList_Handler,
+		},
+		{
+			MethodName: "CreateGroup",
+			Handler:    _RelationShip_CreateGroup_Handler,
 		},
 		{
 			MethodName: "JoinGroup",

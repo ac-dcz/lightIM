@@ -50,4 +50,5 @@ const (
 	RpcRelationParseRoute
 	RpcRelationNotExists
 	RpcRelationReqExpired
+	RpcRelationGroupNotExists
 )
